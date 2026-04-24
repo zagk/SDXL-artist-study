@@ -1,60 +1,180 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V - SDXL Artist Study</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:sans-serif;margin:0;padding:0;background:#111;color:#eee}
+.site-header{background:#1a1a2e;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid #333}
+.site-title{color:#aef;font-size:1.2em;font-weight:bold;text-decoration:none}
+.site-nav{display:flex;flex-wrap:wrap;gap:6px}
+.site-nav a{color:#ccc;text-decoration:none;padding:4px 10px;border:1px solid #444;border-radius:4px;font-size:13px}
+.site-nav a:hover,.site-nav a.active{background:#335;color:#aef;border-color:#aef}
+.page-content{padding:14px 16px}
+.intro-text{padding:6px 0 16px;line-height:1.6;color:#bbb}
+.search-container{position:relative;margin-bottom:14px}
+#search-bar{width:100%;max-width:420px;padding:8px 36px 8px 10px;font-size:15px;background:#222;color:#eee;border:1px solid #444;border-radius:4px}
+#clear-icon{position:absolute;left:396px;top:7px;cursor:pointer;font-size:22px;color:#aaa}
+#search-results{background:#222;border:1px solid #444;max-width:420px;position:absolute;z-index:100;width:100%;border-radius:0 0 4px 4px}
+#search-results div{padding:6px 10px;cursor:pointer}
+#search-results div:hover{background:#333}
+.alphabet-nav{margin-bottom:14px;display:flex;flex-wrap:wrap;gap:4px}
+.alphabet-nav a{color:#aef;text-decoration:none;padding:3px 7px;border:1px solid #444;border-radius:4px;font-size:13px}
+.alphabet-nav a:hover,.alphabet-nav a.active{background:#335;border-color:#aef}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.grid>div,.image{background:#1a1a1a;border-radius:6px;overflow:hidden;text-align:center}
+.grid>div p,.image p{padding:6px;margin:0;font-size:12px;cursor:pointer;word-break:break-word}
+.grid>div p:hover,.image p:hover{color:#aef}
+.grid>div img,.image img{width:100%;display:block;cursor:zoom-in;transition:opacity .15s}
+.grid>div img:hover,.image img:hover{opacity:.85}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.tag{background:#222;color:#ccc;border:1px solid #444;padding:5px 12px;border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s}
+.tag:hover,.tag.active{background:#335;color:#aef;border-color:#aef}
+.tag-all{background:#335;color:#aef;border-color:#aef}
+#result-count{color:#888;font-size:13px;margin-bottom:10px}
+h2{margin:0 0 12px;font-size:2em;color:#aef}
+#back-to-top{position:fixed;bottom:28px;right:28px;padding:10px 14px;background:#333;color:#eee;border:none;border-radius:50%;cursor:pointer;font-size:20px;display:none}
+#back-to-top:hover{background:#555}
+.copied-toast{position:fixed;bottom:76px;right:28px;background:#4f4;color:#000;padding:6px 14px;border-radius:4px;display:none;font-size:13px}
+
+/* ── 팝업 라이트박스 ── */
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;justify-content:center;align-items:center;flex-direction:column;gap:10px}
+#lightbox.open{display:flex}
+#lightbox img{max-width:90vw;max-height:82vh;border-radius:8px;box-shadow:0 0 40px #000;object-fit:contain}
+#lightbox-name{color:#eee;font-size:1em;text-align:center;max-width:90vw;cursor:pointer;padding:4px 12px;background:rgba(255,255,255,.08);border-radius:4px}
+#lightbox-name:hover{color:#4f4}
+#lightbox-close{position:fixed;top:18px;right:24px;font-size:2em;color:#aaa;cursor:pointer;line-height:1}
+#lightbox-close:hover{color:#fff}
+#lightbox-prev,#lightbox-next{position:fixed;top:50%;transform:translateY(-50%);font-size:2.5em;color:#aaa;cursor:pointer;user-select:none;padding:0 16px}
+#lightbox-prev{left:4px}#lightbox-next{right:4px}
+#lightbox-prev:hover,#lightbox-next:hover{color:#fff}
+</style>
+</head>
+<body>
+<header class="site-header"><a class="site-title" href="../index.html">SDXL Artist Study</a><nav class="site-nav"><a href="../index.html" class="active">🎨 Artists</a><a href="../film.html" class="">🎞 Film</a><a href="../cameras.html" class="">📷 Cameras</a><a href="../art-movements.html" class="">🖼 Movements</a><a href="../art-mediums.html" class="">✏️ Mediums</a><a href="../tags.html" class="">🏷 Tags</a></nav></header>
+<div class="page-content">
+
 <div class="search-container">
-    <input type="text" id="search-bar" placeholder="Search for an artist..." onkeyup="searchArtist()">
-    <span id="clear-icon" onclick="clearSearch()">×</span>
-    <div id="search-results"></div>
+  <input type="text" id="search-bar" placeholder="Search for an artist..." oninput="searchArtist()">
+  <span id="clear-icon" onclick="clearSearch()">×</span>
+  <div id="search-results"></div>
+</div>
+<div class="alphabet-nav"><a href="../index.html">All</a><a href="../pages/A.html" class="">A</a><a href="../pages/B.html" class="">B</a><a href="../pages/C.html" class="">C</a><a href="../pages/D.html" class="">D</a><a href="../pages/E.html" class="">E</a><a href="../pages/F.html" class="">F</a><a href="../pages/G.html" class="">G</a><a href="../pages/H.html" class="">H</a><a href="../pages/I.html" class="">I</a><a href="../pages/J.html" class="">J</a><a href="../pages/K.html" class="">K</a><a href="../pages/L.html" class="">L</a><a href="../pages/M.html" class="">M</a><a href="../pages/N.html" class="">N</a><a href="../pages/O.html" class="">O</a><a href="../pages/P.html" class="">P</a><a href="../pages/Q.html" class="">Q</a><a href="../pages/R.html" class="">R</a><a href="../pages/S.html" class="">S</a><a href="../pages/T.html" class="">T</a><a href="../pages/U.html" class="">U</a><a href="../pages/V.html" class="active">V</a><a href="../pages/W.html" class="">W</a><a href="../pages/X.html" class="">X</a><a href="../pages/Y.html" class="">Y</a><a href="../pages/Z.html" class="">Z</a></div>
+<h2>V</h2>
+<div class="grid"><div id="V.B. Scheffer"><p onclick="copyToClipboard(this)">V.B. Scheffer</p><img src="../assets/images/sdxl1.0/artists/V.B. Scheffer.jpg" alt="V.B. Scheffer" loading="lazy" onerror="this.style.display='none'"></div><div id="Vadim Meller"><p onclick="copyToClipboard(this)">Vadim Meller</p><img src="../assets/images/sdxl1.0/artists/Vadim Meller.jpg" alt="Vadim Meller" loading="lazy" onerror="this.style.display='none'"></div><div id="Valentin Rekunenko"><p onclick="copyToClipboard(this)">Valentin Rekunenko</p><img src="../assets/images/sdxl1.0/artists/Valentin Rekunenko.jpg" alt="Valentin Rekunenko" loading="lazy" onerror="this.style.display='none'"></div><div id="Valentin Serov"><p onclick="copyToClipboard(this)">Valentin Serov</p><img src="../assets/images/sdxl1.0/artists/Valentin Serov.jpg" alt="Valentin Serov" loading="lazy" onerror="this.style.display='none'"></div><div id="Valentin de Boulogne"><p onclick="copyToClipboard(this)">Valentin de Boulogne</p><img src="../assets/images/sdxl1.0/artists/Valentin de Boulogne.jpg" alt="Valentin de Boulogne" loading="lazy" onerror="this.style.display='none'"></div><div id="Valentine Hugo"><p onclick="copyToClipboard(this)">Valentine Hugo</p><img src="../assets/images/sdxl1.0/artists/Valentine Hugo.jpg" alt="Valentine Hugo" loading="lazy" onerror="this.style.display='none'"></div><div id="Valentine Penrose"><p onclick="copyToClipboard(this)">Valentine Penrose</p><img src="../assets/images/sdxl1.0/artists/Valentine Penrose.jpg" alt="Valentine Penrose" loading="lazy" onerror="this.style.display='none'"></div><div id="Valerie Hegarty"><p onclick="copyToClipboard(this)">Valerie Hegarty</p><img src="../assets/images/sdxl1.0/artists/Valerie Hegarty.jpg" alt="Valerie Hegarty" loading="lazy" onerror="this.style.display='none'"></div><div id="Valerie Jaudon"><p onclick="copyToClipboard(this)">Valerie Jaudon</p><img src="../assets/images/sdxl1.0/artists/Valerie Jaudon.jpg" alt="Valerie Jaudon" loading="lazy" onerror="this.style.display='none'"></div><div id="Valerie LeBlond"><p onclick="copyToClipboard(this)">Valerie LeBlond</p><img src="../assets/images/sdxl1.0/artists/Valerie LeBlond.jpg" alt="Valerie LeBlond" loading="lazy" onerror="this.style.display='none'"></div><div id="Valerio Olgiati"><p onclick="copyToClipboard(this)">Valerio Olgiati</p><img src="../assets/images/sdxl1.0/artists/Valerio Olgiati.jpg" alt="Valerio Olgiati" loading="lazy" onerror="this.style.display='none'"></div><div id="Valeriy Vegera"><p onclick="copyToClipboard(this)">Valeriy Vegera</p><img src="../assets/images/sdxl1.0/artists/Valeriy Vegera.jpg" alt="Valeriy Vegera" loading="lazy" onerror="this.style.display='none'"></div><div id="ValheIm Hammershøi"><p onclick="copyToClipboard(this)">ValheIm Hammershøi</p><img src="../assets/images/sdxl1.0/artists/ValheIm Hammershøi.jpg" alt="ValheIm Hammershøi" loading="lazy" onerror="this.style.display='none'"></div><div id="Vanessa Beecroft"><p onclick="copyToClipboard(this)">Vanessa Beecroft</p><img src="../assets/images/sdxl1.0/artists/Vanessa Beecroft.jpg" alt="Vanessa Beecroft" loading="lazy" onerror="this.style.display='none'"></div><div id="Vanessa Bell"><p onclick="copyToClipboard(this)">Vanessa Bell</p><img src="../assets/images/sdxl1.0/artists/Vanessa Bell.jpg" alt="Vanessa Bell" loading="lazy" onerror="this.style.display='none'"></div><div id="Vanessa Lemen"><p onclick="copyToClipboard(this)">Vanessa Lemen</p><img src="../assets/images/sdxl1.0/artists/Vanessa Lemen.jpg" alt="Vanessa Lemen" loading="lazy" onerror="this.style.display='none'"></div><div id="Vanessa Lemen"><p onclick="copyToClipboard(this)">Vanessa Lemen</p><img src="../assets/images/sdxl1.0/artists/Vanessa Lemen.jpg" alt="Vanessa Lemen" loading="lazy" onerror="this.style.display='none'"></div><div id="Vania Zouravliov"><p onclick="copyToClipboard(this)">Vania Zouravliov</p><img src="../assets/images/sdxl1.0/artists/Vania Zouravliov.jpg" alt="Vania Zouravliov" loading="lazy" onerror="this.style.display='none'"></div><div id="Vasan Sitthiket"><p onclick="copyToClipboard(this)">Vasan Sitthiket</p><img src="../assets/images/sdxl1.0/artists/Vasan Sitthiket.jpg" alt="Vasan Sitthiket" loading="lazy" onerror="this.style.display='none'"></div><div id="Vasily Vereshchagin"><p onclick="copyToClipboard(this)">Vasily Vereshchagin</p><img src="../assets/images/sdxl1.0/artists/Vasily Vereshchagin.jpg" alt="Vasily Vereshchagin" loading="lazy" onerror="this.style.display='none'"></div><div id="Vaughn Bode"><p onclick="copyToClipboard(this)">Vaughn Bode</p><img src="../assets/images/sdxl1.0/artists/Vaughn Bode.jpg" alt="Vaughn Bode" loading="lazy" onerror="this.style.display='none'"></div><div id="Vera Molnar"><p onclick="copyToClipboard(this)">Vera Molnar</p><img src="../assets/images/sdxl1.0/artists/Vera Molnar.jpg" alt="Vera Molnar" loading="lazy" onerror="this.style.display='none'"></div><div id="Vergvoktre"><p onclick="copyToClipboard(this)">Vergvoktre</p><img src="../assets/images/sdxl1.0/artists/Vergvoktre.jpg" alt="Vergvoktre" loading="lazy" onerror="this.style.display='none'"></div><div id="Verner Panton"><p onclick="copyToClipboard(this)">Verner Panton</p><img src="../assets/images/sdxl1.0/artists/Verner Panton.jpg" alt="Verner Panton" loading="lazy" onerror="this.style.display='none'"></div><div id="Vernon Courtlandt Johnson"><p onclick="copyToClipboard(this)">Vernon Courtlandt Johnson</p><img src="../assets/images/sdxl1.0/artists/Vernon Courtlandt Johnson.jpg" alt="Vernon Courtlandt Johnson" loading="lazy" onerror="this.style.display='none'"></div><div id="Veronika Pinke"><p onclick="copyToClipboard(this)">Veronika Pinke</p><img src="../assets/images/sdxl1.0/artists/Veronika Pinke.jpg" alt="Veronika Pinke" loading="lazy" onerror="this.style.display='none'"></div><div id="Vhils"><p onclick="copyToClipboard(this)">Vhils</p><img src="../assets/images/sdxl1.0/artists/Vhils.jpg" alt="Vhils" loading="lazy" onerror="this.style.display='none'"></div><div id="Vic Prezio"><p onclick="copyToClipboard(this)">Vic Prezio</p><img src="../assets/images/sdxl1.0/artists/Vic Prezio.jpg" alt="Vic Prezio" loading="lazy" onerror="this.style.display='none'"></div><div id="Vicente Alcazar"><p onclick="copyToClipboard(this)">Vicente Alcazar</p><img src="../assets/images/sdxl1.0/artists/Vicente Alcazar.jpg" alt="Vicente Alcazar" loading="lazy" onerror="this.style.display='none'"></div><div id="Vicente Palmaroli y González"><p onclick="copyToClipboard(this)">Vicente Palmaroli y González</p><img src="../assets/images/sdxl1.0/artists/Vicente Palmaroli y González.jpg" alt="Vicente Palmaroli y González" loading="lazy" onerror="this.style.display='none'"></div><div id="Vicente Romero Redondo"><p onclick="copyToClipboard(this)">Vicente Romero Redondo</p><img src="../assets/images/sdxl1.0/artists/Vicente Romero Redondo.jpg" alt="Vicente Romero Redondo" loading="lazy" onerror="this.style.display='none'"></div><div id="Victo Ngai"><p onclick="copyToClipboard(this)">Victo Ngai</p><img src="../assets/images/sdxl1.0/artists/Victo Ngai.jpg" alt="Victo Ngai" loading="lazy" onerror="this.style.display='none'"></div><div id="Victor Adame Minguez"><p onclick="copyToClipboard(this)">Victor Adame Minguez</p><img src="../assets/images/sdxl1.0/artists/Victor Adame Minguez.jpg" alt="Victor Adame Minguez" loading="lazy" onerror="this.style.display='none'"></div><div id="Victor Brauner"><p onclick="copyToClipboard(this)">Victor Brauner</p><img src="../assets/images/sdxl1.0/artists/Victor Brauner.jpg" alt="Victor Brauner" loading="lazy" onerror="this.style.display='none'"></div><div id="Victor Enrich"><p onclick="copyToClipboard(this)">Victor Enrich</p><img src="../assets/images/sdxl1.0/artists/Victor Enrich.jpg" alt="Victor Enrich" loading="lazy" onerror="this.style.display='none'"></div><div id="Victor Hammer"><p onclick="copyToClipboard(this)">Victor Hammer</p><img src="../assets/images/sdxl1.0/artists/Victor Hammer.jpg" alt="Victor Hammer" loading="lazy" onerror="this.style.display='none'"></div><div id="Victor Horta"><p onclick="copyToClipboard(this)">Victor Horta</p><img src="../assets/images/sdxl1.0/artists/Victor Horta.jpg" alt="Victor Horta" loading="lazy" onerror="this.style.display='none'"></div><div id="Victor Medina"><p onclick="copyToClipboard(this)">Victor Medina</p><img src="../assets/images/sdxl1.0/artists/Victor Medina.jpg" alt="Victor Medina" loading="lazy" onerror="this.style.display='none'"></div><div id="Victor Moscoso"><p onclick="copyToClipboard(this)">Victor Moscoso</p><img src="../assets/images/sdxl1.0/artists/Victor Moscoso.jpg" alt="Victor Moscoso" loading="lazy" onerror="this.style.display='none'"></div><div id="Victor Mosquera"><p onclick="copyToClipboard(this)">Victor Mosquera</p><img src="../assets/images/sdxl1.0/artists/Victor Mosquera.jpg" alt="Victor Mosquera" loading="lazy" onerror="this.style.display='none'"></div><div id="Victor Nizovtsev"><p onclick="copyToClipboard(this)">Victor Nizovtsev</p><img src="../assets/images/sdxl1.0/artists/Victor Nizovtsev.jpg" alt="Victor Nizovtsev" loading="lazy" onerror="this.style.display='none'"></div><div id="Victor Pasmore"><p onclick="copyToClipboard(this)">Victor Pasmore</p><img src="../assets/images/sdxl1.0/artists/Victor Pasmore.jpg" alt="Victor Pasmore" loading="lazy" onerror="this.style.display='none'"></div><div id="Victor Prezio"><p onclick="copyToClipboard(this)">Victor Prezio</p><img src="../assets/images/sdxl1.0/artists/Victor Prezio.jpg" alt="Victor Prezio" loading="lazy" onerror="this.style.display='none'"></div><div id="Victor Valla"><p onclick="copyToClipboard(this)">Victor Valla</p><img src="../assets/images/sdxl1.0/artists/Victor Valla.jpg" alt="Victor Valla" loading="lazy" onerror="this.style.display='none'"></div><div id="Victor Vasarely"><p onclick="copyToClipboard(this)">Victor Vasarely</p><img src="../assets/images/sdxl1.0/artists/Victor Vasarely.jpg" alt="Victor Vasarely" loading="lazy" onerror="this.style.display='none'"></div><div id="Victoria Crowe"><p onclick="copyToClipboard(this)">Victoria Crowe</p><img src="../assets/images/sdxl1.0/artists/Victoria Crowe.jpg" alt="Victoria Crowe" loading="lazy" onerror="this.style.display='none'"></div><div id="Victoria Francés"><p onclick="copyToClipboard(this)">Victoria Francés</p><img src="../assets/images/sdxl1.0/artists/Victoria Francés.jpg" alt="Victoria Francés" loading="lazy" onerror="this.style.display='none'"></div><div id="Victoria Poyser"><p onclick="copyToClipboard(this)">Victoria Poyser</p><img src="../assets/images/sdxl1.0/artists/Victoria Poyser.jpg" alt="Victoria Poyser" loading="lazy" onerror="this.style.display='none'"></div><div id="Victoria Selbach"><p onclick="copyToClipboard(this)">Victoria Selbach</p><img src="../assets/images/sdxl1.0/artists/Victoria Selbach.jpg" alt="Victoria Selbach" loading="lazy" onerror="this.style.display='none'"></div><div id="Victorina Durán"><p onclick="copyToClipboard(this)">Victorina Durán</p><img src="../assets/images/sdxl1.0/artists/Victorina Durán.jpg" alt="Victorina Durán" loading="lazy" onerror="this.style.display='none'"></div><div id="Vija Celmins"><p onclick="copyToClipboard(this)">Vija Celmins</p><img src="../assets/images/sdxl1.0/artists/Vija Celmins.jpg" alt="Vija Celmins" loading="lazy" onerror="this.style.display='none'"></div><div id="Vik Muniz"><p onclick="copyToClipboard(this)">Vik Muniz</p><img src="../assets/images/sdxl1.0/artists/Vik Muniz.jpg" alt="Vik Muniz" loading="lazy" onerror="this.style.display='none'"></div><div id="Viktor Oliva"><p onclick="copyToClipboard(this)">Viktor Oliva</p><img src="../assets/images/sdxl1.0/artists/Viktor Oliva.jpg" alt="Viktor Oliva" loading="lazy" onerror="this.style.display='none'"></div><div id="Viktor Vasnetsov"><p onclick="copyToClipboard(this)">Viktor Vasnetsov</p><img src="../assets/images/sdxl1.0/artists/Viktor Vasnetsov.jpg" alt="Viktor Vasnetsov" loading="lazy" onerror="this.style.display='none'"></div><div id="Viktoria Gavrilenko"><p onclick="copyToClipboard(this)">Viktoria Gavrilenko</p><img src="../assets/images/sdxl1.0/artists/Viktoria Gavrilenko.jpg" alt="Viktoria Gavrilenko" loading="lazy" onerror="this.style.display='none'"></div><div id="Vilhelm Hammershoi"><p onclick="copyToClipboard(this)">Vilhelm Hammershoi</p><img src="../assets/images/sdxl1.0/artists/Vilhelm Hammershoi.jpg" alt="Vilhelm Hammershoi" loading="lazy" onerror="this.style.display='none'"></div><div id="Vilhelm Lundstrom"><p onclick="copyToClipboard(this)">Vilhelm Lundstrom</p><img src="../assets/images/sdxl1.0/artists/Vilhelm Lundstrom.jpg" alt="Vilhelm Lundstrom" loading="lazy" onerror="this.style.display='none'"></div><div id="Vince Colletta"><p onclick="copyToClipboard(this)">Vince Colletta</p><img src="../assets/images/sdxl1.0/artists/Vince Colletta.jpg" alt="Vince Colletta" loading="lazy" onerror="this.style.display='none'"></div><div id="Vincent Callebaut"><p onclick="copyToClipboard(this)">Vincent Callebaut</p><img src="../assets/images/sdxl1.0/artists/Vincent Callebaut.jpg" alt="Vincent Callebaut" loading="lazy" onerror="this.style.display='none'"></div><div id="Vincent Desiderio"><p onclick="copyToClipboard(this)">Vincent Desiderio</p><img src="../assets/images/sdxl1.0/artists/Vincent Desiderio.jpg" alt="Vincent Desiderio" loading="lazy" onerror="this.style.display='none'"></div><div id="Vincent Di Fate"><p onclick="copyToClipboard(this)">Vincent Di Fate</p><img src="../assets/images/sdxl1.0/artists/Vincent Di Fate.jpg" alt="Vincent Di Fate" loading="lazy" onerror="this.style.display='none'"></div><div id="Vincent Disederio"><p onclick="copyToClipboard(this)">Vincent Disederio</p><img src="../assets/images/sdxl1.0/artists/Vincent Disederio.jpg" alt="Vincent Disederio" loading="lazy" onerror="this.style.display='none'"></div><div id="Vincent Lefevre"><p onclick="copyToClipboard(this)">Vincent Lefevre</p><img src="../assets/images/sdxl1.0/artists/Vincent Lefevre.jpg" alt="Vincent Lefevre" loading="lazy" onerror="this.style.display='none'"></div><div id="Vincent Mallié"><p onclick="copyToClipboard(this)">Vincent Mallié</p><img src="../assets/images/sdxl1.0/artists/Vincent Mallié.jpg" alt="Vincent Mallié" loading="lazy" onerror="this.style.display='none'"></div><div id="Vincent Tanguay"><p onclick="copyToClipboard(this)">Vincent Tanguay</p><img src="../assets/images/sdxl1.0/artists/Vincent Tanguay.jpg" alt="Vincent Tanguay" loading="lazy" onerror="this.style.display='none'"></div><div id="Vincent van Gogh"><p onclick="copyToClipboard(this)">Vincent van Gogh</p><img src="../assets/images/sdxl1.0/artists/Vincent van Gogh.jpg" alt="Vincent van Gogh" loading="lazy" onerror="this.style.display='none'"></div><div id="Virgil Finlay"><p onclick="copyToClipboard(this)">Virgil Finlay</p><img src="../assets/images/sdxl1.0/artists/Virgil Finlay.jpg" alt="Virgil Finlay" loading="lazy" onerror="this.style.display='none'"></div><div id="Virginia Frances Sterrett"><p onclick="copyToClipboard(this)">Virginia Frances Sterrett</p><img src="../assets/images/sdxl1.0/artists/Virginia Frances Sterrett.jpg" alt="Virginia Frances Sterrett" loading="lazy" onerror="this.style.display='none'"></div><div id="Vito Acconci"><p onclick="copyToClipboard(this)">Vito Acconci</p><img src="../assets/images/sdxl1.0/artists/Vito Acconci.jpg" alt="Vito Acconci" loading="lazy" onerror="this.style.display='none'"></div><div id="Vittorio Matteo Corcos"><p onclick="copyToClipboard(this)">Vittorio Matteo Corcos</p><img src="../assets/images/sdxl1.0/artists/Vittorio Matteo Corcos.jpg" alt="Vittorio Matteo Corcos" loading="lazy" onerror="this.style.display='none'"></div><div id="Vittorio Reggianini"><p onclick="copyToClipboard(this)">Vittorio Reggianini</p><img src="../assets/images/sdxl1.0/artists/Vittorio Reggianini.jpg" alt="Vittorio Reggianini" loading="lazy" onerror="this.style.display='none'"></div><div id="Vittorio Tessari"><p onclick="copyToClipboard(this)">Vittorio Tessari</p><img src="../assets/images/sdxl1.0/artists/Vittorio Tessari.jpg" alt="Vittorio Tessari" loading="lazy" onerror="this.style.display='none'"></div><div id="Vivian Maier"><p onclick="copyToClipboard(this)">Vivian Maier</p><img src="../assets/images/sdxl1.0/artists/Vivian Maier.jpg" alt="Vivian Maier" loading="lazy" onerror="this.style.display='none'"></div><div id="Viviane Sassen"><p onclick="copyToClipboard(this)">Viviane Sassen</p><img src="../assets/images/sdxl1.0/artists/Viviane Sassen.jpg" alt="Viviane Sassen" loading="lazy" onerror="this.style.display='none'"></div><div id="Vivien Kubos"><p onclick="copyToClipboard(this)">Vivien Kubos</p><img src="../assets/images/sdxl1.0/artists/Vivien Kubos.jpg" alt="Vivien Kubos" loading="lazy" onerror="this.style.display='none'"></div><div id="Vivienne Tam"><p onclick="copyToClipboard(this)">Vivienne Tam</p><img src="../assets/images/sdxl1.0/artists/Vivienne Tam.jpg" alt="Vivienne Tam" loading="lazy" onerror="this.style.display='none'"></div><div id="Vivienne Westwood"><p onclick="copyToClipboard(this)">Vivienne Westwood</p><img src="../assets/images/sdxl1.0/artists/Vivienne Westwood.jpg" alt="Vivienne Westwood" loading="lazy" onerror="this.style.display='none'"></div><div id="Vladimir Bonacic"><p onclick="copyToClipboard(this)">Vladimir Bonacic</p><img src="../assets/images/sdxl1.0/artists/Vladimir Bonacic.jpg" alt="Vladimir Bonacic" loading="lazy" onerror="this.style.display='none'"></div><div id="Vladimir Kush"><p onclick="copyToClipboard(this)">Vladimir Kush</p><img src="../assets/images/sdxl1.0/artists/Vladimir Kush.jpg" alt="Vladimir Kush" loading="lazy" onerror="this.style.display='none'"></div><div id="Vladimir Stankovic"><p onclick="copyToClipboard(this)">Vladimir Stankovic</p><img src="../assets/images/sdxl1.0/artists/Vladimir Stankovic.jpg" alt="Vladimir Stankovic" loading="lazy" onerror="this.style.display='none'"></div><div id="Vladimir Tarasov"><p onclick="copyToClipboard(this)">Vladimir Tarasov</p><img src="../assets/images/sdxl1.0/artists/Vladimir Tarasov.jpg" alt="Vladimir Tarasov" loading="lazy" onerror="this.style.display='none'"></div><div id="Vladimir Tatlin"><p onclick="copyToClipboard(this)">Vladimir Tatlin</p><img src="../assets/images/sdxl1.0/artists/Vladimir Tatlin.jpg" alt="Vladimir Tatlin" loading="lazy" onerror="this.style.display='none'"></div><div id="Vladimir Volegov"><p onclick="copyToClipboard(this)">Vladimir Volegov</p><img src="../assets/images/sdxl1.0/artists/Vladimir Volegov.jpg" alt="Vladimir Volegov" loading="lazy" onerror="this.style.display='none'"></div><div id="Vladislav Erko"><p onclick="copyToClipboard(this)">Vladislav Erko</p><img src="../assets/images/sdxl1.0/artists/Vladislav Erko.jpg" alt="Vladislav Erko" loading="lazy" onerror="this.style.display='none'"></div><div id="Vladislav Pantic"><p onclick="copyToClipboard(this)">Vladislav Pantic</p><img src="../assets/images/sdxl1.0/artists/Vladislav Pantic.jpg" alt="Vladislav Pantic" loading="lazy" onerror="this.style.display='none'"></div><div id="Vytautas Kairiukstis"><p onclick="copyToClipboard(this)">Vytautas Kairiukstis</p><img src="../assets/images/sdxl1.0/artists/Vytautas Kairiukstis.jpg" alt="Vytautas Kairiukstis" loading="lazy" onerror="this.style.display='none'"></div></div>
 </div>
 
-<link rel="stylesheet" href="{{ '/main.css' | relative_url }}">
-{% assign letter = 'V' %}
-<div class="alphabet-nav">
-    <a href="{{ site.baseurl }}/index.html">All</a>
-    <a href="{{ site.baseurl }}/pages/A.html">A</a>
-    <a href="{{ site.baseurl }}/pages/B.html">B</a>
-    <a href="{{ site.baseurl }}/pages/C.html">C</a>
-    <a href="{{ site.baseurl }}/pages/D.html">D</a>
-    <a href="{{ site.baseurl }}/pages/E.html">E</a>
-    <a href="{{ site.baseurl }}/pages/F.html">F</a>
-    <a href="{{ site.baseurl }}/pages/G.html">G</a>
-    <a href="{{ site.baseurl }}/pages/H.html">H</a>
-    <a href="{{ site.baseurl }}/pages/I.html">I</a>
-    <a href="{{ site.baseurl }}/pages/J.html">J</a>
-    <a href="{{ site.baseurl }}/pages/K.html">K</a>
-    <a href="{{ site.baseurl }}/pages/L.html">L</a>
-    <a href="{{ site.baseurl }}/pages/M.html">M</a>
-    <a href="{{ site.baseurl }}/pages/N.html">N</a>
-    <a href="{{ site.baseurl }}/pages/O.html">O</a>
-    <a href="{{ site.baseurl }}/pages/P.html">P</a>
-    <a href="{{ site.baseurl }}/pages/Q.html">Q</a>
-    <a href="{{ site.baseurl }}/pages/R.html">R</a>
-    <a href="{{ site.baseurl }}/pages/S.html">S</a>
-    <a href="{{ site.baseurl }}/pages/T.html">T</a>
-    <a href="{{ site.baseurl }}/pages/U.html">U</a>
-    <a href="{{ site.baseurl }}/pages/V.html">V</a>
-    <a href="{{ site.baseurl }}/pages/W.html">W</a>
-    <a href="{{ site.baseurl }}/pages/X.html">X</a>
-    <a href="{{ site.baseurl }}/pages/Y.html">Y</a>
-    <a href="{{ site.baseurl }}/pages/Z.html">Z</a>
+<div id="lightbox">
+  <span id="lightbox-close" onclick="closeLightbox()">✕</span>
+  <span id="lightbox-prev" onclick="lbPrev()">&#8249;</span>
+  <img id="lightbox-img" src="" alt="">
+  <span id="lightbox-name"></span>
+  <span id="lightbox-next" onclick="lbNext()">&#8250;</span>
 </div>
 
-<h2>{{ letter }}</h2>
+<button id="back-to-top" onclick="scrollToTop()">↑</button><div class="copied-toast" id="copied-toast">Copied!</div>
+<script>
 
-<div class="grid">
-    {% for image in site.static_files %}
-        {% assign filename = image.name | remove: '.jpg' %}
-        {% assign first_char = filename | slice: 0 | upcase %}
-        {% if image.path contains 'artists' and first_char == letter %}
-            <div id="{{ image.name | remove: '.jpg' }}">
-                <p onclick="copyToClipboard(this)">{{ image.name | remove: '.jpg' }}</p>
-                <img src="{{ site.baseurl }}{{ image.path }}" alt="{{ image.name }}">
-            </div>
-        {% endif %}
-    {% endfor %}
-    </div>
+function searchArtist(){
+    const q=document.getElementById('search-bar').value.toLowerCase();
+    const res=document.getElementById('search-results');
+    if(!q){res.innerHTML='';return;}
+    const matches=["V.B. Scheffer", "Vadim Meller", "Valentin Rekunenko", "Valentin Serov", "Valentin de Boulogne", "Valentine Hugo", "Valentine Penrose", "Valerie Hegarty", "Valerie Jaudon", "Valerie LeBlond", "Valerio Olgiati", "Valeriy Vegera", "ValheIm Hammershøi", "Vanessa Beecroft", "Vanessa Bell", "Vanessa Lemen", "Vanessa Lemen", "Vania Zouravliov", "Vasan Sitthiket", "Vasily Vereshchagin", "Vaughn Bode", "Vera Molnar", "Vergvoktre", "Verner Panton", "Vernon Courtlandt Johnson", "Veronika Pinke", "Vhils", "Vic Prezio", "Vicente Alcazar", "Vicente Palmaroli y González", "Vicente Romero Redondo", "Victo Ngai", "Victor Adame Minguez", "Victor Brauner", "Victor Enrich", "Victor Hammer", "Victor Horta", "Victor Medina", "Victor Moscoso", "Victor Mosquera", "Victor Nizovtsev", "Victor Pasmore", "Victor Prezio", "Victor Valla", "Victor Vasarely", "Victoria Crowe", "Victoria Francés", "Victoria Poyser", "Victoria Selbach", "Victorina Durán", "Vija Celmins", "Vik Muniz", "Viktor Oliva", "Viktor Vasnetsov", "Viktoria Gavrilenko", "Vilhelm Hammershoi", "Vilhelm Lundstrom", "Vince Colletta", "Vincent Callebaut", "Vincent Desiderio", "Vincent Di Fate", "Vincent Disederio", "Vincent Lefevre", "Vincent Mallié", "Vincent Tanguay", "Vincent van Gogh", "Virgil Finlay", "Virginia Frances Sterrett", "Vito Acconci", "Vittorio Matteo Corcos", "Vittorio Reggianini", "Vittorio Tessari", "Vivian Maier", "Viviane Sassen", "Vivien Kubos", "Vivienne Tam", "Vivienne Westwood", "Vladimir Bonacic", "Vladimir Kush", "Vladimir Stankovic", "Vladimir Tarasov", "Vladimir Tatlin", "Vladimir Volegov", "Vladislav Erko", "Vladislav Pantic", "Vytautas Kairiukstis"].filter(a=>a.toLowerCase().includes(q)).slice(0,20);
+    res.innerHTML=matches.map(a=>'<div onclick="scrollToArtist(\''+a.replace(/'/g,"\\'")+'\'">'+a+'</div>').join('');
+}
+function clearSearch(){
+    document.getElementById('search-bar').value='';
+    document.getElementById('search-results').innerHTML='';
+}
+function scrollToArtist(name){
+    const el=document.getElementById(name);
+    if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.style.outline='2px solid #aef';setTimeout(()=>el.style.outline='',2000);}
+    document.getElementById('search-results').innerHTML='';
+}
 
-<button id="back-to-top" onclick="scrollToTop()">↑</button>
+document.addEventListener('DOMContentLoaded',()=>bindImgClick());
 
-<script src="{{ '/assets/js/script.js' | relative_url }}"></script>
+// ── 라이트박스 ──
+const lb      = document.getElementById('lightbox');
+const lbImg   = document.getElementById('lightbox-img');
+const lbName  = document.getElementById('lightbox-name');
+let lbItems=[], lbIdx=0;
+
+function buildLbItems(){
+    lbItems = Array.from(document.querySelectorAll('.grid img, .image img'))
+                   .filter(img=>img.style.display!=='none' && img.complete && img.naturalWidth>0);
+}
+
+function openLightbox(img){
+    buildLbItems();
+    lbIdx = lbItems.indexOf(img);
+    if(lbIdx===-1){lbItems.unshift(img);lbIdx=0;}
+    showLb(lbIdx);
+}
+
+function showLb(idx){
+    const img = lbItems[idx];
+    if(!img) return;
+    lbImg.src   = img.src;
+    lbImg.alt   = img.alt;
+    lbName.textContent = img.alt;
+    lb.classList.add('open');
+    document.body.style.overflow='hidden';
+}
+
+function closeLightbox(){
+    lb.classList.remove('open');
+    lbImg.src='';
+    document.body.style.overflow='';
+}
+
+function lbPrev(){lbIdx=(lbIdx-1+lbItems.length)%lbItems.length;showLb(lbIdx);}
+function lbNext(){lbIdx=(lbIdx+1)%lbItems.length;showLb(lbIdx);}
+
+lb.addEventListener('click',e=>{if(e.target===lb)closeLightbox();});
+document.addEventListener('keydown',e=>{
+    if(!lb.classList.contains('open'))return;
+    if(e.key==='Escape')closeLightbox();
+    if(e.key==='ArrowLeft')lbPrev();
+    if(e.key==='ArrowRight')lbNext();
+});
+lbName.addEventListener('click',()=>{
+    navigator.clipboard.writeText(lbName.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+});
+
+// 이미지에 클릭 이벤트 등록 (동적 생성 포함)
+function bindImgClick(root){
+    (root||document).querySelectorAll('.grid img,.image img').forEach(img=>{
+        if(!img.dataset.lbBound){
+            img.dataset.lbBound='1';
+            img.addEventListener('click',()=>openLightbox(img));
+        }
+    });
+}
+
+
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+function copyToClipboard(el){
+    navigator.clipboard.writeText(el.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+}
+window.addEventListener('scroll',()=>{
+    document.getElementById('back-to-top').style.display=window.scrollY>400?'block':'none';
+});
+document.addEventListener('click',e=>{
+    if(!e.target.closest('.search-container'))
+        document.getElementById('search-results').innerHTML='';
+});
+
+</script>
+</body>
+</html>

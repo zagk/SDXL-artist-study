@@ -1,60 +1,180 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O - SDXL Artist Study</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:sans-serif;margin:0;padding:0;background:#111;color:#eee}
+.site-header{background:#1a1a2e;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid #333}
+.site-title{color:#aef;font-size:1.2em;font-weight:bold;text-decoration:none}
+.site-nav{display:flex;flex-wrap:wrap;gap:6px}
+.site-nav a{color:#ccc;text-decoration:none;padding:4px 10px;border:1px solid #444;border-radius:4px;font-size:13px}
+.site-nav a:hover,.site-nav a.active{background:#335;color:#aef;border-color:#aef}
+.page-content{padding:14px 16px}
+.intro-text{padding:6px 0 16px;line-height:1.6;color:#bbb}
+.search-container{position:relative;margin-bottom:14px}
+#search-bar{width:100%;max-width:420px;padding:8px 36px 8px 10px;font-size:15px;background:#222;color:#eee;border:1px solid #444;border-radius:4px}
+#clear-icon{position:absolute;left:396px;top:7px;cursor:pointer;font-size:22px;color:#aaa}
+#search-results{background:#222;border:1px solid #444;max-width:420px;position:absolute;z-index:100;width:100%;border-radius:0 0 4px 4px}
+#search-results div{padding:6px 10px;cursor:pointer}
+#search-results div:hover{background:#333}
+.alphabet-nav{margin-bottom:14px;display:flex;flex-wrap:wrap;gap:4px}
+.alphabet-nav a{color:#aef;text-decoration:none;padding:3px 7px;border:1px solid #444;border-radius:4px;font-size:13px}
+.alphabet-nav a:hover,.alphabet-nav a.active{background:#335;border-color:#aef}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.grid>div,.image{background:#1a1a1a;border-radius:6px;overflow:hidden;text-align:center}
+.grid>div p,.image p{padding:6px;margin:0;font-size:12px;cursor:pointer;word-break:break-word}
+.grid>div p:hover,.image p:hover{color:#aef}
+.grid>div img,.image img{width:100%;display:block;cursor:zoom-in;transition:opacity .15s}
+.grid>div img:hover,.image img:hover{opacity:.85}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.tag{background:#222;color:#ccc;border:1px solid #444;padding:5px 12px;border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s}
+.tag:hover,.tag.active{background:#335;color:#aef;border-color:#aef}
+.tag-all{background:#335;color:#aef;border-color:#aef}
+#result-count{color:#888;font-size:13px;margin-bottom:10px}
+h2{margin:0 0 12px;font-size:2em;color:#aef}
+#back-to-top{position:fixed;bottom:28px;right:28px;padding:10px 14px;background:#333;color:#eee;border:none;border-radius:50%;cursor:pointer;font-size:20px;display:none}
+#back-to-top:hover{background:#555}
+.copied-toast{position:fixed;bottom:76px;right:28px;background:#4f4;color:#000;padding:6px 14px;border-radius:4px;display:none;font-size:13px}
+
+/* ── 팝업 라이트박스 ── */
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;justify-content:center;align-items:center;flex-direction:column;gap:10px}
+#lightbox.open{display:flex}
+#lightbox img{max-width:90vw;max-height:82vh;border-radius:8px;box-shadow:0 0 40px #000;object-fit:contain}
+#lightbox-name{color:#eee;font-size:1em;text-align:center;max-width:90vw;cursor:pointer;padding:4px 12px;background:rgba(255,255,255,.08);border-radius:4px}
+#lightbox-name:hover{color:#4f4}
+#lightbox-close{position:fixed;top:18px;right:24px;font-size:2em;color:#aaa;cursor:pointer;line-height:1}
+#lightbox-close:hover{color:#fff}
+#lightbox-prev,#lightbox-next{position:fixed;top:50%;transform:translateY(-50%);font-size:2.5em;color:#aaa;cursor:pointer;user-select:none;padding:0 16px}
+#lightbox-prev{left:4px}#lightbox-next{right:4px}
+#lightbox-prev:hover,#lightbox-next:hover{color:#fff}
+</style>
+</head>
+<body>
+<header class="site-header"><a class="site-title" href="../index.html">SDXL Artist Study</a><nav class="site-nav"><a href="../index.html" class="active">🎨 Artists</a><a href="../film.html" class="">🎞 Film</a><a href="../cameras.html" class="">📷 Cameras</a><a href="../art-movements.html" class="">🖼 Movements</a><a href="../art-mediums.html" class="">✏️ Mediums</a><a href="../tags.html" class="">🏷 Tags</a></nav></header>
+<div class="page-content">
+
 <div class="search-container">
-    <input type="text" id="search-bar" placeholder="Search for an artist..." onkeyup="searchArtist()">
-    <span id="clear-icon" onclick="clearSearch()">×</span>
-    <div id="search-results"></div>
+  <input type="text" id="search-bar" placeholder="Search for an artist..." oninput="searchArtist()">
+  <span id="clear-icon" onclick="clearSearch()">×</span>
+  <div id="search-results"></div>
+</div>
+<div class="alphabet-nav"><a href="../index.html">All</a><a href="../pages/A.html" class="">A</a><a href="../pages/B.html" class="">B</a><a href="../pages/C.html" class="">C</a><a href="../pages/D.html" class="">D</a><a href="../pages/E.html" class="">E</a><a href="../pages/F.html" class="">F</a><a href="../pages/G.html" class="">G</a><a href="../pages/H.html" class="">H</a><a href="../pages/I.html" class="">I</a><a href="../pages/J.html" class="">J</a><a href="../pages/K.html" class="">K</a><a href="../pages/L.html" class="">L</a><a href="../pages/M.html" class="">M</a><a href="../pages/N.html" class="">N</a><a href="../pages/O.html" class="active">O</a><a href="../pages/P.html" class="">P</a><a href="../pages/Q.html" class="">Q</a><a href="../pages/R.html" class="">R</a><a href="../pages/S.html" class="">S</a><a href="../pages/T.html" class="">T</a><a href="../pages/U.html" class="">U</a><a href="../pages/V.html" class="">V</a><a href="../pages/W.html" class="">W</a><a href="../pages/X.html" class="">X</a><a href="../pages/Y.html" class="">Y</a><a href="../pages/Z.html" class="">Z</a></div>
+<h2>O</h2>
+<div class="grid"><div id="OSGEMEOS"><p onclick="copyToClipboard(this)">OSGEMEOS</p><img src="../assets/images/sdxl1.0/artists/OSGEMEOS.jpg" alt="OSGEMEOS" loading="lazy" onerror="this.style.display='none'"></div><div id="Octavio Ocampo"><p onclick="copyToClipboard(this)">Octavio Ocampo</p><img src="../assets/images/sdxl1.0/artists/Octavio Ocampo.jpg" alt="Octavio Ocampo" loading="lazy" onerror="this.style.display='none'"></div><div id="Odd Nerdrum"><p onclick="copyToClipboard(this)">Odd Nerdrum</p><img src="../assets/images/sdxl1.0/artists/Odd Nerdrum.jpg" alt="Odd Nerdrum" loading="lazy" onerror="this.style.display='none'"></div><div id="Odilon Redon"><p onclick="copyToClipboard(this)">Odilon Redon</p><img src="../assets/images/sdxl1.0/artists/Odilon Redon.jpg" alt="Odilon Redon" loading="lazy" onerror="this.style.display='none'"></div><div id="Ogawa Kazumasa"><p onclick="copyToClipboard(this)">Ogawa Kazumasa</p><img src="../assets/images/sdxl1.0/artists/Ogawa Kazumasa.jpg" alt="Ogawa Kazumasa" loading="lazy" onerror="this.style.display='none'"></div><div id="Ohara Koson"><p onclick="copyToClipboard(this)">Ohara Koson</p><img src="../assets/images/sdxl1.0/artists/Ohara Koson.jpg" alt="Ohara Koson" loading="lazy" onerror="this.style.display='none'"></div><div id="Okuda San Miguel"><p onclick="copyToClipboard(this)">Okuda San Miguel</p><img src="../assets/images/sdxl1.0/artists/Okuda San Miguel.jpg" alt="Okuda San Miguel" loading="lazy" onerror="this.style.display='none'"></div><div id="Olafur Eliasson"><p onclick="copyToClipboard(this)">Olafur Eliasson</p><img src="../assets/images/sdxl1.0/artists/Olafur Eliasson.jpg" alt="Olafur Eliasson" loading="lazy" onerror="this.style.display='none'"></div><div id="Ole Peter Hansen Balling"><p onclick="copyToClipboard(this)">Ole Peter Hansen Balling</p><img src="../assets/images/sdxl1.0/artists/Ole Peter Hansen Balling.jpg" alt="Ole Peter Hansen Balling" loading="lazy" onerror="this.style.display='none'"></div><div id="Oleg Korolev"><p onclick="copyToClipboard(this)">Oleg Korolev</p><img src="../assets/images/sdxl1.0/artists/Oleg Korolev.jpg" alt="Oleg Korolev" loading="lazy" onerror="this.style.display='none'"></div><div id="Oleg Oprisco"><p onclick="copyToClipboard(this)">Oleg Oprisco</p><img src="../assets/images/sdxl1.0/artists/Oleg Oprisco.jpg" alt="Oleg Oprisco" loading="lazy" onerror="this.style.display='none'"></div><div id="Oleg Shuplyak"><p onclick="copyToClipboard(this)">Oleg Shuplyak</p><img src="../assets/images/sdxl1.0/artists/Oleg Shuplyak.jpg" alt="Oleg Shuplyak" loading="lazy" onerror="this.style.display='none'"></div><div id="Oleksandr Bogomazov"><p onclick="copyToClipboard(this)">Oleksandr Bogomazov</p><img src="../assets/images/sdxl1.0/artists/Oleksandr Bogomazov.jpg" alt="Oleksandr Bogomazov" loading="lazy" onerror="this.style.display='none'"></div><div id="Oleksiy Golovchenko"><p onclick="copyToClipboard(this)">Oleksiy Golovchenko</p><img src="../assets/images/sdxl1.0/artists/Oleksiy Golovchenko.jpg" alt="Oleksiy Golovchenko" loading="lazy" onerror="this.style.display='none'"></div><div id="Oleksiy Rysyuk"><p onclick="copyToClipboard(this)">Oleksiy Rysyuk</p><img src="../assets/images/sdxl1.0/artists/Oleksiy Rysyuk.jpg" alt="Oleksiy Rysyuk" loading="lazy" onerror="this.style.display='none'"></div><div id="Olexandr Archipenko"><p onclick="copyToClipboard(this)">Olexandr Archipenko</p><img src="../assets/images/sdxl1.0/artists/Olexandr Archipenko.jpg" alt="Olexandr Archipenko" loading="lazy" onerror="this.style.display='none'"></div><div id="Olga Dugina"><p onclick="copyToClipboard(this)">Olga Dugina</p><img src="../assets/images/sdxl1.0/artists/Olga Dugina.jpg" alt="Olga Dugina" loading="lazy" onerror="this.style.display='none'"></div><div id="Olga Dugina"><p onclick="copyToClipboard(this)">Olga Dugina</p><img src="../assets/images/sdxl1.0/artists/Olga Dugina.jpg" alt="Olga Dugina" loading="lazy" onerror="this.style.display='none'"></div><div id="Olga Dugina & Andrej Dugin"><p onclick="copyToClipboard(this)">Olga Dugina & Andrej Dugin</p><img src="../assets/images/sdxl1.0/artists/Olga Dugina & Andrej Dugin.jpg" alt="Olga Dugina & Andrej Dugin" loading="lazy" onerror="this.style.display='none'"></div><div id="Olga Esther"><p onclick="copyToClipboard(this)">Olga Esther</p><img src="../assets/images/sdxl1.0/artists/Olga Esther.jpg" alt="Olga Esther" loading="lazy" onerror="this.style.display='none'"></div><div id="Olga Ionajtis"><p onclick="copyToClipboard(this)">Olga Ionajtis</p><img src="../assets/images/sdxl1.0/artists/Olga Ionajtis.jpg" alt="Olga Ionajtis" loading="lazy" onerror="this.style.display='none'"></div><div id="Olga Kim"><p onclick="copyToClipboard(this)">Olga Kim</p><img src="../assets/images/sdxl1.0/artists/Olga Kim.jpg" alt="Olga Kim" loading="lazy" onerror="this.style.display='none'"></div><div id="Olga Skomorokhova"><p onclick="copyToClipboard(this)">Olga Skomorokhova</p><img src="../assets/images/sdxl1.0/artists/Olga Skomorokhova.jpg" alt="Olga Skomorokhova" loading="lazy" onerror="this.style.display='none'"></div><div id="Olive Cotton"><p onclick="copyToClipboard(this)">Olive Cotton</p><img src="../assets/images/sdxl1.0/artists/Olive Cotton.jpg" alt="Olive Cotton" loading="lazy" onerror="this.style.display='none'"></div><div id="Oliver Frey"><p onclick="copyToClipboard(this)">Oliver Frey</p><img src="../assets/images/sdxl1.0/artists/Oliver Frey.jpg" alt="Oliver Frey" loading="lazy" onerror="this.style.display='none'"></div><div id="Oliver Jeffers"><p onclick="copyToClipboard(this)">Oliver Jeffers</p><img src="../assets/images/sdxl1.0/artists/Oliver Jeffers.jpg" alt="Oliver Jeffers" loading="lazy" onerror="this.style.display='none'"></div><div id="Oliver Odmark"><p onclick="copyToClipboard(this)">Oliver Odmark</p><img src="../assets/images/sdxl1.0/artists/Oliver Odmark.jpg" alt="Oliver Odmark" loading="lazy" onerror="this.style.display='none'"></div><div id="Oliver Ryan"><p onclick="copyToClipboard(this)">Oliver Ryan</p><img src="../assets/images/sdxl1.0/artists/Oliver Ryan.jpg" alt="Oliver Ryan" loading="lazy" onerror="this.style.display='none'"></div><div id="Oliver Wetter"><p onclick="copyToClipboard(this)">Oliver Wetter</p><img src="../assets/images/sdxl1.0/artists/Oliver Wetter.jpg" alt="Oliver Wetter" loading="lazy" onerror="this.style.display='none'"></div><div id="Olivia Locher"><p onclick="copyToClipboard(this)">Olivia Locher</p><img src="../assets/images/sdxl1.0/artists/Olivia Locher.jpg" alt="Olivia Locher" loading="lazy" onerror="this.style.display='none'"></div><div id="Olivia de Berardinis"><p onclick="copyToClipboard(this)">Olivia de Berardinis</p><img src="../assets/images/sdxl1.0/artists/Olivia de Berardinis.jpg" alt="Olivia de Berardinis" loading="lazy" onerror="this.style.display='none'"></div><div id="Olivier Bonhomme"><p onclick="copyToClipboard(this)">Olivier Bonhomme</p><img src="../assets/images/sdxl1.0/artists/Olivier Bonhomme.jpg" alt="Olivier Bonhomme" loading="lazy" onerror="this.style.display='none'"></div><div id="Olivier Ledroit"><p onclick="copyToClipboard(this)">Olivier Ledroit</p><img src="../assets/images/sdxl1.0/artists/Olivier Ledroit.jpg" alt="Olivier Ledroit" loading="lazy" onerror="this.style.display='none'"></div><div id="Olivier Valsecchi"><p onclick="copyToClipboard(this)">Olivier Valsecchi</p><img src="../assets/images/sdxl1.0/artists/Olivier Valsecchi.jpg" alt="Olivier Valsecchi" loading="lazy" onerror="this.style.display='none'"></div><div id="Olivier de Sagazan"><p onclick="copyToClipboard(this)">Olivier de Sagazan</p><img src="../assets/images/sdxl1.0/artists/Olivier de Sagazan.jpg" alt="Olivier de Sagazan" loading="lazy" onerror="this.style.display='none'"></div><div id="Ollie Hoff"><p onclick="copyToClipboard(this)">Ollie Hoff</p><img src="../assets/images/sdxl1.0/artists/Ollie Hoff.jpg" alt="Ollie Hoff" loading="lazy" onerror="this.style.display='none'"></div><div id="Olof Thunman"><p onclick="copyToClipboard(this)">Olof Thunman</p><img src="../assets/images/sdxl1.0/artists/Olof Thunman.jpg" alt="Olof Thunman" loading="lazy" onerror="this.style.display='none'"></div><div id="Omar Rayyan"><p onclick="copyToClipboard(this)">Omar Rayyan</p><img src="../assets/images/sdxl1.0/artists/Omar Rayyan.jpg" alt="Omar Rayyan" loading="lazy" onerror="this.style.display='none'"></div><div id="Omri Koresh"><p onclick="copyToClipboard(this)">Omri Koresh</p><img src="../assets/images/sdxl1.0/artists/Omri Koresh.jpg" alt="Omri Koresh" loading="lazy" onerror="this.style.display='none'"></div><div id="Orazio Gentileschi"><p onclick="copyToClipboard(this)">Orazio Gentileschi</p><img src="../assets/images/sdxl1.0/artists/Orazio Gentileschi.jpg" alt="Orazio Gentileschi" loading="lazy" onerror="this.style.display='none'"></div><div id="Orphné Achéron"><p onclick="copyToClipboard(this)">Orphné Achéron</p><img src="../assets/images/sdxl1.0/artists/Orphné Achéron.jpg" alt="Orphné Achéron" loading="lazy" onerror="this.style.display='none'"></div><div id="Os Gemeos"><p onclick="copyToClipboard(this)">Os Gemeos</p><img src="../assets/images/sdxl1.0/artists/Os Gemeos.jpg" alt="Os Gemeos" loading="lazy" onerror="this.style.display='none'"></div><div id="Osamu Tezuka"><p onclick="copyToClipboard(this)">Osamu Tezuka</p><img src="../assets/images/sdxl1.0/artists/Osamu Tezuka.jpg" alt="Osamu Tezuka" loading="lazy" onerror="this.style.display='none'"></div><div id="Oscar Niemeyer"><p onclick="copyToClipboard(this)">Oscar Niemeyer</p><img src="../assets/images/sdxl1.0/artists/Oscar Niemeyer.jpg" alt="Oscar Niemeyer" loading="lazy" onerror="this.style.display='none'"></div><div id="Oscar Rejlander"><p onclick="copyToClipboard(this)">Oscar Rejlander</p><img src="../assets/images/sdxl1.0/artists/Oscar Rejlander.jpg" alt="Oscar Rejlander" loading="lazy" onerror="this.style.display='none'"></div><div id="Oskar Fischinger"><p onclick="copyToClipboard(this)">Oskar Fischinger</p><img src="../assets/images/sdxl1.0/artists/Oskar Fischinger.jpg" alt="Oskar Fischinger" loading="lazy" onerror="this.style.display='none'"></div><div id="Oskar Kokoschka"><p onclick="copyToClipboard(this)">Oskar Kokoschka</p><img src="../assets/images/sdxl1.0/artists/Oskar Kokoschka.jpg" alt="Oskar Kokoschka" loading="lazy" onerror="this.style.display='none'"></div><div id="Oskar Schlemmer"><p onclick="copyToClipboard(this)">Oskar Schlemmer</p><img src="../assets/images/sdxl1.0/artists/Oskar Schlemmer.jpg" alt="Oskar Schlemmer" loading="lazy" onerror="this.style.display='none'"></div><div id="Osman Hamdi"><p onclick="copyToClipboard(this)">Osman Hamdi</p><img src="../assets/images/sdxl1.0/artists/Osman Hamdi.jpg" alt="Osman Hamdi" loading="lazy" onerror="this.style.display='none'"></div><div id="Ossip Zadkine"><p onclick="copyToClipboard(this)">Ossip Zadkine</p><img src="../assets/images/sdxl1.0/artists/Ossip Zadkine.jpg" alt="Ossip Zadkine" loading="lazy" onerror="this.style.display='none'"></div><div id="Oswaldo Guayasamin"><p onclick="copyToClipboard(this)">Oswaldo Guayasamin</p><img src="../assets/images/sdxl1.0/artists/Oswaldo Guayasamin.jpg" alt="Oswaldo Guayasamin" loading="lazy" onerror="this.style.display='none'"></div><div id="Othon Friesz"><p onclick="copyToClipboard(this)">Othon Friesz</p><img src="../assets/images/sdxl1.0/artists/Othon Friesz.jpg" alt="Othon Friesz" loading="lazy" onerror="this.style.display='none'"></div><div id="Otto Dix"><p onclick="copyToClipboard(this)">Otto Dix</p><img src="../assets/images/sdxl1.0/artists/Otto Dix.jpg" alt="Otto Dix" loading="lazy" onerror="this.style.display='none'"></div><div id="Otto Freundlich"><p onclick="copyToClipboard(this)">Otto Freundlich</p><img src="../assets/images/sdxl1.0/artists/Otto Freundlich.jpg" alt="Otto Freundlich" loading="lazy" onerror="this.style.display='none'"></div><div id="Otto Marseus van Schrieck"><p onclick="copyToClipboard(this)">Otto Marseus van Schrieck</p><img src="../assets/images/sdxl1.0/artists/Otto Marseus van Schrieck.jpg" alt="Otto Marseus van Schrieck" loading="lazy" onerror="this.style.display='none'"></div><div id="Otto Mueller"><p onclick="copyToClipboard(this)">Otto Mueller</p><img src="../assets/images/sdxl1.0/artists/Otto Mueller.jpg" alt="Otto Mueller" loading="lazy" onerror="this.style.display='none'"></div><div id="Otto Müller"><p onclick="copyToClipboard(this)">Otto Müller</p><img src="../assets/images/sdxl1.0/artists/Otto Müller.jpg" alt="Otto Müller" loading="lazy" onerror="this.style.display='none'"></div><div id="Otto Piene"><p onclick="copyToClipboard(this)">Otto Piene</p><img src="../assets/images/sdxl1.0/artists/Otto Piene.jpg" alt="Otto Piene" loading="lazy" onerror="this.style.display='none'"></div><div id="Otto Schmidt"><p onclick="copyToClipboard(this)">Otto Schmidt</p><img src="../assets/images/sdxl1.0/artists/Otto Schmidt.jpg" alt="Otto Schmidt" loading="lazy" onerror="this.style.display='none'"></div><div id="Otto Seitz"><p onclick="copyToClipboard(this)">Otto Seitz</p><img src="../assets/images/sdxl1.0/artists/Otto Seitz.jpg" alt="Otto Seitz" loading="lazy" onerror="this.style.display='none'"></div><div id="Otto Warburg"><p onclick="copyToClipboard(this)">Otto Warburg</p><img src="../assets/images/sdxl1.0/artists/Otto Warburg.jpg" alt="Otto Warburg" loading="lazy" onerror="this.style.display='none'"></div><div id="Owlturd"><p onclick="copyToClipboard(this)">Owlturd</p><img src="../assets/images/sdxl1.0/artists/Owlturd.jpg" alt="Owlturd" loading="lazy" onerror="this.style.display='none'"></div></div>
 </div>
 
-<link rel="stylesheet" href="{{ '/main.css' | relative_url }}">
-{% assign letter = 'O' %}
-<div class="alphabet-nav">
-    <a href="{{ site.baseurl }}/index.html">All</a>
-    <a href="{{ site.baseurl }}/pages/A.html">A</a>
-    <a href="{{ site.baseurl }}/pages/B.html">B</a>
-    <a href="{{ site.baseurl }}/pages/C.html">C</a>
-    <a href="{{ site.baseurl }}/pages/D.html">D</a>
-    <a href="{{ site.baseurl }}/pages/E.html">E</a>
-    <a href="{{ site.baseurl }}/pages/F.html">F</a>
-    <a href="{{ site.baseurl }}/pages/G.html">G</a>
-    <a href="{{ site.baseurl }}/pages/H.html">H</a>
-    <a href="{{ site.baseurl }}/pages/I.html">I</a>
-    <a href="{{ site.baseurl }}/pages/J.html">J</a>
-    <a href="{{ site.baseurl }}/pages/K.html">K</a>
-    <a href="{{ site.baseurl }}/pages/L.html">L</a>
-    <a href="{{ site.baseurl }}/pages/M.html">M</a>
-    <a href="{{ site.baseurl }}/pages/N.html">N</a>
-    <a href="{{ site.baseurl }}/pages/O.html">O</a>
-    <a href="{{ site.baseurl }}/pages/P.html">P</a>
-    <a href="{{ site.baseurl }}/pages/Q.html">Q</a>
-    <a href="{{ site.baseurl }}/pages/R.html">R</a>
-    <a href="{{ site.baseurl }}/pages/S.html">S</a>
-    <a href="{{ site.baseurl }}/pages/T.html">T</a>
-    <a href="{{ site.baseurl }}/pages/U.html">U</a>
-    <a href="{{ site.baseurl }}/pages/V.html">V</a>
-    <a href="{{ site.baseurl }}/pages/W.html">W</a>
-    <a href="{{ site.baseurl }}/pages/X.html">X</a>
-    <a href="{{ site.baseurl }}/pages/Y.html">Y</a>
-    <a href="{{ site.baseurl }}/pages/Z.html">Z</a>
+<div id="lightbox">
+  <span id="lightbox-close" onclick="closeLightbox()">✕</span>
+  <span id="lightbox-prev" onclick="lbPrev()">&#8249;</span>
+  <img id="lightbox-img" src="" alt="">
+  <span id="lightbox-name"></span>
+  <span id="lightbox-next" onclick="lbNext()">&#8250;</span>
 </div>
 
-<h2>{{ letter }}</h2>
+<button id="back-to-top" onclick="scrollToTop()">↑</button><div class="copied-toast" id="copied-toast">Copied!</div>
+<script>
 
-<div class="grid">
-    {% for image in site.static_files %}
-        {% assign filename = image.name | remove: '.jpg' %}
-        {% assign first_char = filename | slice: 0 | upcase %}
-        {% if image.path contains 'artists' and first_char == letter %}
-            <div id="{{ image.name | remove: '.jpg' }}">
-                <p onclick="copyToClipboard(this)">{{ image.name | remove: '.jpg' }}</p>
-                <img src="{{ site.baseurl }}{{ image.path }}" alt="{{ image.name }}">
-            </div>
-        {% endif %}
-    {% endfor %}
-    </div>
+function searchArtist(){
+    const q=document.getElementById('search-bar').value.toLowerCase();
+    const res=document.getElementById('search-results');
+    if(!q){res.innerHTML='';return;}
+    const matches=["OSGEMEOS", "Octavio Ocampo", "Odd Nerdrum", "Odilon Redon", "Ogawa Kazumasa", "Ohara Koson", "Okuda San Miguel", "Olafur Eliasson", "Ole Peter Hansen Balling", "Oleg Korolev", "Oleg Oprisco", "Oleg Shuplyak", "Oleksandr Bogomazov", "Oleksiy Golovchenko", "Oleksiy Rysyuk", "Olexandr Archipenko", "Olga Dugina", "Olga Dugina", "Olga Dugina & Andrej Dugin", "Olga Esther", "Olga Ionajtis", "Olga Kim", "Olga Skomorokhova", "Olive Cotton", "Oliver Frey", "Oliver Jeffers", "Oliver Odmark", "Oliver Ryan", "Oliver Wetter", "Olivia Locher", "Olivia de Berardinis", "Olivier Bonhomme", "Olivier Ledroit", "Olivier Valsecchi", "Olivier de Sagazan", "Ollie Hoff", "Olof Thunman", "Omar Rayyan", "Omri Koresh", "Orazio Gentileschi", "Orphné Achéron", "Os Gemeos", "Osamu Tezuka", "Oscar Niemeyer", "Oscar Rejlander", "Oskar Fischinger", "Oskar Kokoschka", "Oskar Schlemmer", "Osman Hamdi", "Ossip Zadkine", "Oswaldo Guayasamin", "Othon Friesz", "Otto Dix", "Otto Freundlich", "Otto Marseus van Schrieck", "Otto Mueller", "Otto Müller", "Otto Piene", "Otto Schmidt", "Otto Seitz", "Otto Warburg", "Owlturd"].filter(a=>a.toLowerCase().includes(q)).slice(0,20);
+    res.innerHTML=matches.map(a=>'<div onclick="scrollToArtist(\''+a.replace(/'/g,"\\'")+'\'">'+a+'</div>').join('');
+}
+function clearSearch(){
+    document.getElementById('search-bar').value='';
+    document.getElementById('search-results').innerHTML='';
+}
+function scrollToArtist(name){
+    const el=document.getElementById(name);
+    if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.style.outline='2px solid #aef';setTimeout(()=>el.style.outline='',2000);}
+    document.getElementById('search-results').innerHTML='';
+}
 
-<button id="back-to-top" onclick="scrollToTop()">↑</button>
+document.addEventListener('DOMContentLoaded',()=>bindImgClick());
 
-<script src="{{ '/assets/js/script.js' | relative_url }}"></script>
+// ── 라이트박스 ──
+const lb      = document.getElementById('lightbox');
+const lbImg   = document.getElementById('lightbox-img');
+const lbName  = document.getElementById('lightbox-name');
+let lbItems=[], lbIdx=0;
+
+function buildLbItems(){
+    lbItems = Array.from(document.querySelectorAll('.grid img, .image img'))
+                   .filter(img=>img.style.display!=='none' && img.complete && img.naturalWidth>0);
+}
+
+function openLightbox(img){
+    buildLbItems();
+    lbIdx = lbItems.indexOf(img);
+    if(lbIdx===-1){lbItems.unshift(img);lbIdx=0;}
+    showLb(lbIdx);
+}
+
+function showLb(idx){
+    const img = lbItems[idx];
+    if(!img) return;
+    lbImg.src   = img.src;
+    lbImg.alt   = img.alt;
+    lbName.textContent = img.alt;
+    lb.classList.add('open');
+    document.body.style.overflow='hidden';
+}
+
+function closeLightbox(){
+    lb.classList.remove('open');
+    lbImg.src='';
+    document.body.style.overflow='';
+}
+
+function lbPrev(){lbIdx=(lbIdx-1+lbItems.length)%lbItems.length;showLb(lbIdx);}
+function lbNext(){lbIdx=(lbIdx+1)%lbItems.length;showLb(lbIdx);}
+
+lb.addEventListener('click',e=>{if(e.target===lb)closeLightbox();});
+document.addEventListener('keydown',e=>{
+    if(!lb.classList.contains('open'))return;
+    if(e.key==='Escape')closeLightbox();
+    if(e.key==='ArrowLeft')lbPrev();
+    if(e.key==='ArrowRight')lbNext();
+});
+lbName.addEventListener('click',()=>{
+    navigator.clipboard.writeText(lbName.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+});
+
+// 이미지에 클릭 이벤트 등록 (동적 생성 포함)
+function bindImgClick(root){
+    (root||document).querySelectorAll('.grid img,.image img').forEach(img=>{
+        if(!img.dataset.lbBound){
+            img.dataset.lbBound='1';
+            img.addEventListener('click',()=>openLightbox(img));
+        }
+    });
+}
+
+
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+function copyToClipboard(el){
+    navigator.clipboard.writeText(el.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+}
+window.addEventListener('scroll',()=>{
+    document.getElementById('back-to-top').style.display=window.scrollY>400?'block':'none';
+});
+document.addEventListener('click',e=>{
+    if(!e.target.closest('.search-container'))
+        document.getElementById('search-results').innerHTML='';
+});
+
+</script>
+</body>
+</html>

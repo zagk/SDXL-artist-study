@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Film - SDXL Artist Study</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:sans-serif;margin:0;padding:0;background:#111;color:#eee}
+.site-header{background:#1a1a2e;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid #333}
+.site-title{color:#aef;font-size:1.2em;font-weight:bold;text-decoration:none}
+.site-nav{display:flex;flex-wrap:wrap;gap:6px}
+.site-nav a{color:#ccc;text-decoration:none;padding:4px 10px;border:1px solid #444;border-radius:4px;font-size:13px}
+.site-nav a:hover,.site-nav a.active{background:#335;color:#aef;border-color:#aef}
+.page-content{padding:14px 16px}
+.intro-text{padding:6px 0 16px;line-height:1.6;color:#bbb}
+.search-container{position:relative;margin-bottom:14px}
+#search-bar{width:100%;max-width:420px;padding:8px 36px 8px 10px;font-size:15px;background:#222;color:#eee;border:1px solid #444;border-radius:4px}
+#clear-icon{position:absolute;left:396px;top:7px;cursor:pointer;font-size:22px;color:#aaa}
+#search-results{background:#222;border:1px solid #444;max-width:420px;position:absolute;z-index:100;width:100%;border-radius:0 0 4px 4px}
+#search-results div{padding:6px 10px;cursor:pointer}
+#search-results div:hover{background:#333}
+.alphabet-nav{margin-bottom:14px;display:flex;flex-wrap:wrap;gap:4px}
+.alphabet-nav a{color:#aef;text-decoration:none;padding:3px 7px;border:1px solid #444;border-radius:4px;font-size:13px}
+.alphabet-nav a:hover,.alphabet-nav a.active{background:#335;border-color:#aef}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.grid>div,.image{background:#1a1a1a;border-radius:6px;overflow:hidden;text-align:center}
+.grid>div p,.image p{padding:6px;margin:0;font-size:12px;cursor:pointer;word-break:break-word}
+.grid>div p:hover,.image p:hover{color:#aef}
+.grid>div img,.image img{width:100%;display:block;cursor:zoom-in;transition:opacity .15s}
+.grid>div img:hover,.image img:hover{opacity:.85}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.tag{background:#222;color:#ccc;border:1px solid #444;padding:5px 12px;border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s}
+.tag:hover,.tag.active{background:#335;color:#aef;border-color:#aef}
+.tag-all{background:#335;color:#aef;border-color:#aef}
+#result-count{color:#888;font-size:13px;margin-bottom:10px}
+h2{margin:0 0 12px;font-size:2em;color:#aef}
+#back-to-top{position:fixed;bottom:28px;right:28px;padding:10px 14px;background:#333;color:#eee;border:none;border-radius:50%;cursor:pointer;font-size:20px;display:none}
+#back-to-top:hover{background:#555}
+.copied-toast{position:fixed;bottom:76px;right:28px;background:#4f4;color:#000;padding:6px 14px;border-radius:4px;display:none;font-size:13px}
+
+/* ── 팝업 라이트박스 ── */
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;justify-content:center;align-items:center;flex-direction:column;gap:10px}
+#lightbox.open{display:flex}
+#lightbox img{max-width:90vw;max-height:82vh;border-radius:8px;box-shadow:0 0 40px #000;object-fit:contain}
+#lightbox-name{color:#eee;font-size:1em;text-align:center;max-width:90vw;cursor:pointer;padding:4px 12px;background:rgba(255,255,255,.08);border-radius:4px}
+#lightbox-name:hover{color:#4f4}
+#lightbox-close{position:fixed;top:18px;right:24px;font-size:2em;color:#aaa;cursor:pointer;line-height:1}
+#lightbox-close:hover{color:#fff}
+#lightbox-prev,#lightbox-next{position:fixed;top:50%;transform:translateY(-50%);font-size:2.5em;color:#aaa;cursor:pointer;user-select:none;padding:0 16px}
+#lightbox-prev{left:4px}#lightbox-next{right:4px}
+#lightbox-prev:hover,#lightbox-next:hover{color:#fff}
+</style>
+</head>
+<body>
+<header class="site-header"><a class="site-title" href="index.html">SDXL Artist Study</a><nav class="site-nav"><a href="index.html" class="">🎨 Artists</a><a href="film.html" class="active">🎞 Film</a><a href="cameras.html" class="">📷 Cameras</a><a href="art-movements.html" class="">🖼 Movements</a><a href="art-mediums.html" class="">✏️ Mediums</a><a href="tags.html" class="">🏷 Tags</a></nav></header>
+<div class="page-content">
+
+<div class="intro-text">Various camera film. Prompted with <em>'portrait photograph shot on {film}'</em></div>
+<div class="search-container">
+  <input type="text" id="search-bar" placeholder="Search for a film..." oninput="searchArtist()">
+  <span id="clear-icon" onclick="clearSearch()">×</span>
+  <div id="search-results"></div>
+</div>
+<div class="grid"><div id="Kodak Portra 400"><p onclick="copyToClipboard(this)">Kodak Portra 400</p><img src="assets/images/sdxl1.0/film/Kodak Portra 400.jpg" alt="Kodak Portra 400" loading="lazy" onerror="this.style.display='none'"></div><div id="Fujifilm Pro 400H"><p onclick="copyToClipboard(this)">Fujifilm Pro 400H</p><img src="assets/images/sdxl1.0/film/Fujifilm Pro 400H.jpg" alt="Fujifilm Pro 400H" loading="lazy" onerror="this.style.display='none'"></div><div id="Ilford HP5 Plus 400"><p onclick="copyToClipboard(this)">Ilford HP5 Plus 400</p><img src="assets/images/sdxl1.0/film/Ilford HP5 Plus 400.jpg" alt="Ilford HP5 Plus 400" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Tri-X 400"><p onclick="copyToClipboard(this)">Kodak Tri-X 400</p><img src="assets/images/sdxl1.0/film/Kodak Tri-X 400.jpg" alt="Kodak Tri-X 400" loading="lazy" onerror="this.style.display='none'"></div><div id="AgfaPhoto Vista Plus 200"><p onclick="copyToClipboard(this)">AgfaPhoto Vista Plus 200</p><img src="assets/images/sdxl1.0/film/AgfaPhoto Vista Plus 200.jpg" alt="AgfaPhoto Vista Plus 200" loading="lazy" onerror="this.style.display='none'"></div><div id="Lomography Color Negative 800"><p onclick="copyToClipboard(this)">Lomography Color Negative 800</p><img src="assets/images/sdxl1.0/film/Lomography Color Negative 800.jpg" alt="Lomography Color Negative 800" loading="lazy" onerror="this.style.display='none'"></div><div id="Cinestill 800T"><p onclick="copyToClipboard(this)">Cinestill 800T</p><img src="assets/images/sdxl1.0/film/Cinestill 800T.jpg" alt="Cinestill 800T" loading="lazy" onerror="this.style.display='none'"></div><div id="Fujifilm Velvia 50"><p onclick="copyToClipboard(this)">Fujifilm Velvia 50</p><img src="assets/images/sdxl1.0/film/Fujifilm Velvia 50.jpg" alt="Fujifilm Velvia 50" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Ektar 100"><p onclick="copyToClipboard(this)">Kodak Ektar 100</p><img src="assets/images/sdxl1.0/film/Kodak Ektar 100.jpg" alt="Kodak Ektar 100" loading="lazy" onerror="this.style.display='none'"></div><div id="Ilford Delta 3200"><p onclick="copyToClipboard(this)">Ilford Delta 3200</p><img src="assets/images/sdxl1.0/film/Ilford Delta 3200.jpg" alt="Ilford Delta 3200" loading="lazy" onerror="this.style.display='none'"></div><div id="Fujifilm Neopan Acros 100"><p onclick="copyToClipboard(this)">Fujifilm Neopan Acros 100</p><img src="assets/images/sdxl1.0/film/Fujifilm Neopan Acros 100.jpg" alt="Fujifilm Neopan Acros 100" loading="lazy" onerror="this.style.display='none'"></div><div id="Kentmere 100"><p onclick="copyToClipboard(this)">Kentmere 100</p><img src="assets/images/sdxl1.0/film/Kentmere 100.jpg" alt="Kentmere 100" loading="lazy" onerror="this.style.display='none'"></div><div id="Rollei Retro 80S"><p onclick="copyToClipboard(this)">Rollei Retro 80S</p><img src="assets/images/sdxl1.0/film/Rollei Retro 80S.jpg" alt="Rollei Retro 80S" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak T-Max 100"><p onclick="copyToClipboard(this)">Kodak T-Max 100</p><img src="assets/images/sdxl1.0/film/Kodak T-Max 100.jpg" alt="Kodak T-Max 100" loading="lazy" onerror="this.style.display='none'"></div><div id="Foma Fomapan 100 Classic"><p onclick="copyToClipboard(this)">Foma Fomapan 100 Classic</p><img src="assets/images/sdxl1.0/film/Foma Fomapan 100 Classic.jpg" alt="Foma Fomapan 100 Classic" loading="lazy" onerror="this.style.display='none'"></div><div id="Ilford FP4 Plus 125"><p onclick="copyToClipboard(this)">Ilford FP4 Plus 125</p><img src="assets/images/sdxl1.0/film/Ilford FP4 Plus 125.jpg" alt="Ilford FP4 Plus 125" loading="lazy" onerror="this.style.display='none'"></div><div id="Agfaphoto CT Precisa 100"><p onclick="copyToClipboard(this)">Agfaphoto CT Precisa 100</p><img src="assets/images/sdxl1.0/film/Agfaphoto CT Precisa 100.jpg" alt="Agfaphoto CT Precisa 100" loading="lazy" onerror="this.style.display='none'"></div><div id="Lomography Lady Grey 400"><p onclick="copyToClipboard(this)">Lomography Lady Grey 400</p><img src="assets/images/sdxl1.0/film/Lomography Lady Grey 400.jpg" alt="Lomography Lady Grey 400" loading="lazy" onerror="this.style.display='none'"></div><div id="Cinestill 50D"><p onclick="copyToClipboard(this)">Cinestill 50D</p><img src="assets/images/sdxl1.0/film/Cinestill 50D.jpg" alt="Cinestill 50D" loading="lazy" onerror="this.style.display='none'"></div><div id="Fujifilm Superia X-TRA 400"><p onclick="copyToClipboard(this)">Fujifilm Superia X-TRA 400</p><img src="assets/images/sdxl1.0/film/Fujifilm Superia X-TRA 400.jpg" alt="Fujifilm Superia X-TRA 400" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Gold 200"><p onclick="copyToClipboard(this)">Kodak Gold 200</p><img src="assets/images/sdxl1.0/film/Kodak Gold 200.jpg" alt="Kodak Gold 200" loading="lazy" onerror="this.style.display='none'"></div><div id="Ilford Pan F Plus 50"><p onclick="copyToClipboard(this)">Ilford Pan F Plus 50</p><img src="assets/images/sdxl1.0/film/Ilford Pan F Plus 50.jpg" alt="Ilford Pan F Plus 50" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Ultramax 400"><p onclick="copyToClipboard(this)">Kodak Ultramax 400</p><img src="assets/images/sdxl1.0/film/Kodak Ultramax 400.jpg" alt="Kodak Ultramax 400" loading="lazy" onerror="this.style.display='none'"></div><div id="Lomography X-Pro 200"><p onclick="copyToClipboard(this)">Lomography X-Pro 200</p><img src="assets/images/sdxl1.0/film/Lomography X-Pro 200.jpg" alt="Lomography X-Pro 200" loading="lazy" onerror="this.style.display='none'"></div><div id="Rollei Infrared 400"><p onclick="copyToClipboard(this)">Rollei Infrared 400</p><img src="assets/images/sdxl1.0/film/Rollei Infrared 400.jpg" alt="Rollei Infrared 400" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Aerochrome"><p onclick="copyToClipboard(this)">Kodak Aerochrome</p><img src="assets/images/sdxl1.0/film/Kodak Aerochrome.jpg" alt="Kodak Aerochrome" loading="lazy" onerror="this.style.display='none'"></div><div id="Fujichrome Provia 100F"><p onclick="copyToClipboard(this)">Fujichrome Provia 100F</p><img src="assets/images/sdxl1.0/film/Fujichrome Provia 100F.jpg" alt="Fujichrome Provia 100F" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Vision3 500T"><p onclick="copyToClipboard(this)">Kodak Vision3 500T</p><img src="assets/images/sdxl1.0/film/Kodak Vision3 500T.jpg" alt="Kodak Vision3 500T" loading="lazy" onerror="this.style.display='none'"></div><div id="Ilford Ortho Plus"><p onclick="copyToClipboard(this)">Ilford Ortho Plus</p><img src="assets/images/sdxl1.0/film/Ilford Ortho Plus.jpg" alt="Ilford Ortho Plus" loading="lazy" onerror="this.style.display='none'"></div><div id="Rollei RPX 25"><p onclick="copyToClipboard(this)">Rollei RPX 25</p><img src="assets/images/sdxl1.0/film/Rollei RPX 25.jpg" alt="Rollei RPX 25" loading="lazy" onerror="this.style.display='none'"></div><div id="Fujifilm Instax Mini"><p onclick="copyToClipboard(this)">Fujifilm Instax Mini</p><img src="assets/images/sdxl1.0/film/Fujifilm Instax Mini.jpg" alt="Fujifilm Instax Mini" loading="lazy" onerror="this.style.display='none'"></div><div id="Polaroid Originals Color"><p onclick="copyToClipboard(this)">Polaroid Originals Color</p><img src="assets/images/sdxl1.0/film/Polaroid Originals Color.jpg" alt="Polaroid Originals Color" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Professional BW400CN"><p onclick="copyToClipboard(this)">Kodak Professional BW400CN</p><img src="assets/images/sdxl1.0/film/Kodak Professional BW400CN.jpg" alt="Kodak Professional BW400CN" loading="lazy" onerror="this.style.display='none'"></div><div id="Adox Silvermax 100"><p onclick="copyToClipboard(this)">Adox Silvermax 100</p><img src="assets/images/sdxl1.0/film/Adox Silvermax 100.jpg" alt="Adox Silvermax 100" loading="lazy" onerror="this.style.display='none'"></div><div id="Bergger Pancro 400"><p onclick="copyToClipboard(this)">Bergger Pancro 400</p><img src="assets/images/sdxl1.0/film/Bergger Pancro 400.jpg" alt="Bergger Pancro 400" loading="lazy" onerror="this.style.display='none'"></div><div id="Ilford SFX 200"><p onclick="copyToClipboard(this)">Ilford SFX 200</p><img src="assets/images/sdxl1.0/film/Ilford SFX 200.jpg" alt="Ilford SFX 200" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Ektachrome E100"><p onclick="copyToClipboard(this)">Kodak Ektachrome E100</p><img src="assets/images/sdxl1.0/film/Kodak Ektachrome E100.jpg" alt="Kodak Ektachrome E100" loading="lazy" onerror="this.style.display='none'"></div><div id="Fujifilm Industrial 100"><p onclick="copyToClipboard(this)">Fujifilm Industrial 100</p><img src="assets/images/sdxl1.0/film/Fujifilm Industrial 100.jpg" alt="Fujifilm Industrial 100" loading="lazy" onerror="this.style.display='none'"></div><div id="ORWO UN54"><p onclick="copyToClipboard(this)">ORWO UN54</p><img src="assets/images/sdxl1.0/film/ORWO UN54.jpg" alt="ORWO UN54" loading="lazy" onerror="this.style.display='none'"></div><div id="Foma Fomapan R100"><p onclick="copyToClipboard(this)">Foma Fomapan R100</p><img src="assets/images/sdxl1.0/film/Foma Fomapan R100.jpg" alt="Foma Fomapan R100" loading="lazy" onerror="this.style.display='none'"></div><div id="Agfa Scala 200x"><p onclick="copyToClipboard(this)">Agfa Scala 200x</p><img src="assets/images/sdxl1.0/film/Agfa Scala 200x.jpg" alt="Agfa Scala 200x" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Portra 160"><p onclick="copyToClipboard(this)">Kodak Portra 160</p><img src="assets/images/sdxl1.0/film/Kodak Portra 160.jpg" alt="Kodak Portra 160" loading="lazy" onerror="this.style.display='none'"></div><div id="Fujifilm Acros II"><p onclick="copyToClipboard(this)">Fujifilm Acros II</p><img src="assets/images/sdxl1.0/film/Fujifilm Acros II.jpg" alt="Fujifilm Acros II" loading="lazy" onerror="this.style.display='none'"></div><div id="Ilford Delta 100"><p onclick="copyToClipboard(this)">Ilford Delta 100</p><img src="assets/images/sdxl1.0/film/Ilford Delta 100.jpg" alt="Ilford Delta 100" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Tmax 3200"><p onclick="copyToClipboard(this)">Kodak Tmax 3200</p><img src="assets/images/sdxl1.0/film/Kodak Tmax 3200.jpg" alt="Kodak Tmax 3200" loading="lazy" onerror="this.style.display='none'"></div><div id="Cinestill BwXX"><p onclick="copyToClipboard(this)">Cinestill BwXX</p><img src="assets/images/sdxl1.0/film/Cinestill BwXX.jpg" alt="Cinestill BwXX" loading="lazy" onerror="this.style.display='none'"></div><div id="Fujifilm Provia 400X"><p onclick="copyToClipboard(this)">Fujifilm Provia 400X</p><img src="assets/images/sdxl1.0/film/Fujifilm Provia 400X.jpg" alt="Fujifilm Provia 400X" loading="lazy" onerror="this.style.display='none'"></div><div id="Ilford XP2 Super"><p onclick="copyToClipboard(this)">Ilford XP2 Super</p><img src="assets/images/sdxl1.0/film/Ilford XP2 Super.jpg" alt="Ilford XP2 Super" loading="lazy" onerror="this.style.display='none'"></div><div id="Rollei Superpan 200"><p onclick="copyToClipboard(this)">Rollei Superpan 200</p><img src="assets/images/sdxl1.0/film/Rollei Superpan 200.jpg" alt="Rollei Superpan 200" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Professional Vericolor III"><p onclick="copyToClipboard(this)">Kodak Professional Vericolor III</p><img src="assets/images/sdxl1.0/film/Kodak Professional Vericolor III.jpg" alt="Kodak Professional Vericolor III" loading="lazy" onerror="this.style.display='none'"></div><div id="AgfaPhoto APX 400"><p onclick="copyToClipboard(this)">AgfaPhoto APX 400</p><img src="assets/images/sdxl1.0/film/AgfaPhoto APX 400.jpg" alt="AgfaPhoto APX 400" loading="lazy" onerror="this.style.display='none'"></div><div id="Lomography Redscale XR 50-200"><p onclick="copyToClipboard(this)">Lomography Redscale XR 50-200</p><img src="assets/images/sdxl1.0/film/Lomography Redscale XR 50-200.jpg" alt="Lomography Redscale XR 50-200" loading="lazy" onerror="this.style.display='none'"></div><div id="Konica Minolta Centuria Super 400"><p onclick="copyToClipboard(this)">Konica Minolta Centuria Super 400</p><img src="assets/images/sdxl1.0/film/Konica Minolta Centuria Super 400.jpg" alt="Konica Minolta Centuria Super 400" loading="lazy" onerror="this.style.display='none'"></div><div id="Fujifilm FP-100C"><p onclick="copyToClipboard(this)">Fujifilm FP-100C</p><img src="assets/images/sdxl1.0/film/Fujifilm FP-100C.jpg" alt="Fujifilm FP-100C" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Ektachrome 64"><p onclick="copyToClipboard(this)">Kodak Ektachrome 64</p><img src="assets/images/sdxl1.0/film/Kodak Ektachrome 64.jpg" alt="Kodak Ektachrome 64" loading="lazy" onerror="this.style.display='none'"></div><div id="Ilford Pan 400"><p onclick="copyToClipboard(this)">Ilford Pan 400</p><img src="assets/images/sdxl1.0/film/Ilford Pan 400.jpg" alt="Ilford Pan 400" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak High Definition 200"><p onclick="copyToClipboard(this)">Kodak High Definition 200</p><img src="assets/images/sdxl1.0/film/Kodak High Definition 200.jpg" alt="Kodak High Definition 200" loading="lazy" onerror="this.style.display='none'"></div><div id="Foma Fomapan 200 Creative"><p onclick="copyToClipboard(this)">Foma Fomapan 200 Creative</p><img src="assets/images/sdxl1.0/film/Foma Fomapan 200 Creative.jpg" alt="Foma Fomapan 200 Creative" loading="lazy" onerror="this.style.display='none'"></div><div id="Ilford Delta 400"><p onclick="copyToClipboard(this)">Ilford Delta 400</p><img src="assets/images/sdxl1.0/film/Ilford Delta 400.jpg" alt="Ilford Delta 400" loading="lazy" onerror="this.style.display='none'"></div><div id="Agfa Vista 400"><p onclick="copyToClipboard(this)">Agfa Vista 400</p><img src="assets/images/sdxl1.0/film/Agfa Vista 400.jpg" alt="Agfa Vista 400" loading="lazy" onerror="this.style.display='none'"></div><div id="Lomography Earl Grey 100"><p onclick="copyToClipboard(this)">Lomography Earl Grey 100</p><img src="assets/images/sdxl1.0/film/Lomography Earl Grey 100.jpg" alt="Lomography Earl Grey 100" loading="lazy" onerror="this.style.display='none'"></div><div id="Cinestill 800T"><p onclick="copyToClipboard(this)">Cinestill 800T</p><img src="assets/images/sdxl1.0/film/Cinestill 800T.jpg" alt="Cinestill 800T" loading="lazy" onerror="this.style.display='none'"></div><div id="Fujifilm Superia Venus 800"><p onclick="copyToClipboard(this)">Fujifilm Superia Venus 800</p><img src="assets/images/sdxl1.0/film/Fujifilm Superia Venus 800.jpg" alt="Fujifilm Superia Venus 800" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Plus-X Pan"><p onclick="copyToClipboard(this)">Kodak Plus-X Pan</p><img src="assets/images/sdxl1.0/film/Kodak Plus-X Pan.jpg" alt="Kodak Plus-X Pan" loading="lazy" onerror="this.style.display='none'"></div><div id="Lucky New SHD 100"><p onclick="copyToClipboard(this)">Lucky New SHD 100</p><img src="assets/images/sdxl1.0/film/Lucky New SHD 100.jpg" alt="Lucky New SHD 100" loading="lazy" onerror="this.style.display='none'"></div><div id="Rollei Ortho 25"><p onclick="copyToClipboard(this)">Rollei Ortho 25</p><img src="assets/images/sdxl1.0/film/Rollei Ortho 25.jpg" alt="Rollei Ortho 25" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Elite Chrome 100"><p onclick="copyToClipboard(this)">Kodak Elite Chrome 100</p><img src="assets/images/sdxl1.0/film/Kodak Elite Chrome 100.jpg" alt="Kodak Elite Chrome 100" loading="lazy" onerror="this.style.display='none'"></div><div id="Fujifilm Instax Wide"><p onclick="copyToClipboard(this)">Fujifilm Instax Wide</p><img src="assets/images/sdxl1.0/film/Fujifilm Instax Wide.jpg" alt="Fujifilm Instax Wide" loading="lazy" onerror="this.style.display='none'"></div><div id="Polaroid Originals Black & White"><p onclick="copyToClipboard(this)">Polaroid Originals Black & White</p><img src="assets/images/sdxl1.0/film/Polaroid Originals Black & White.jpg" alt="Polaroid Originals Black & White" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Vision2 200T"><p onclick="copyToClipboard(this)">Kodak Vision2 200T</p><img src="assets/images/sdxl1.0/film/Kodak Vision2 200T.jpg" alt="Kodak Vision2 200T" loading="lazy" onerror="this.style.display='none'"></div><div id="Agfa Ortho 25 Professional"><p onclick="copyToClipboard(this)">Agfa Ortho 25 Professional</p><img src="assets/images/sdxl1.0/film/Agfa Ortho 25 Professional.jpg" alt="Agfa Ortho 25 Professional" loading="lazy" onerror="this.style.display='none'"></div><div id="Bergger BRF-400 Plus"><p onclick="copyToClipboard(this)">Bergger BRF-400 Plus</p><img src="assets/images/sdxl1.0/film/Bergger BRF-400 Plus.jpg" alt="Bergger BRF-400 Plus" loading="lazy" onerror="this.style.display='none'"></div><div id="Ilford Multigrade IV RC"><p onclick="copyToClipboard(this)">Ilford Multigrade IV RC</p><img src="assets/images/sdxl1.0/film/Ilford Multigrade IV RC.jpg" alt="Ilford Multigrade IV RC" loading="lazy" onerror="this.style.display='none'"></div><div id="Kodak Professional Metallic"><p onclick="copyToClipboard(this)">Kodak Professional Metallic</p><img src="assets/images/sdxl1.0/film/Kodak Professional Metallic.jpg" alt="Kodak Professional Metallic" loading="lazy" onerror="this.style.display='none'"></div><div id="Konica Minolta VX 100 Super"><p onclick="copyToClipboard(this)">Konica Minolta VX 100 Super</p><img src="assets/images/sdxl1.0/film/Konica Minolta VX 100 Super.jpg" alt="Konica Minolta VX 100 Super" loading="lazy" onerror="this.style.display='none'"></div><div id="Rollei Digibase CN200"><p onclick="copyToClipboard(this)">Rollei Digibase CN200</p><img src="assets/images/sdxl1.0/film/Rollei Digibase CN200.jpg" alt="Rollei Digibase CN200" loading="lazy" onerror="this.style.display='none'"></div><div id="Fujifilm FP-3000B"><p onclick="copyToClipboard(this)">Fujifilm FP-3000B</p><img src="assets/images/sdxl1.0/film/Fujifilm FP-3000B.jpg" alt="Fujifilm FP-3000B" loading="lazy" onerror="this.style.display='none'"></div><div id="Adox CMS 20 II"><p onclick="copyToClipboard(this)">Adox CMS 20 II</p><img src="assets/images/sdxl1.0/film/Adox CMS 20 II.jpg" alt="Adox CMS 20 II" loading="lazy" onerror="this.style.display='none'"></div><div id="Lomography Berlin Kino 400"><p onclick="copyToClipboard(this)">Lomography Berlin Kino 400</p><img src="assets/images/sdxl1.0/film/Lomography Berlin Kino 400.jpg" alt="Lomography Berlin Kino 400" loading="lazy" onerror="this.style.display='none'"></div><div id="ORWO NP7"><p onclick="copyToClipboard(this)">ORWO NP7</p><img src="assets/images/sdxl1.0/film/ORWO NP7.jpg" alt="ORWO NP7" loading="lazy" onerror="this.style.display='none'"></div><div id="Foma Retropan 320 Soft"><p onclick="copyToClipboard(this)">Foma Retropan 320 Soft</p><img src="assets/images/sdxl1.0/film/Foma Retropan 320 Soft.jpg" alt="Foma Retropan 320 Soft" loading="lazy" onerror="this.style.display='none'"></div><div id="Polaroid 600"><p onclick="copyToClipboard(this)">Polaroid 600</p><img src="assets/images/sdxl1.0/film/Polaroid 600.jpg" alt="Polaroid 600" loading="lazy" onerror="this.style.display='none'"></div><div id="Agfa Precisa CT 100"><p onclick="copyToClipboard(this)">Agfa Precisa CT 100</p><img src="assets/images/sdxl1.0/film/Agfa Precisa CT 100.jpg" alt="Agfa Precisa CT 100" loading="lazy" onerror="this.style.display='none'"></div><div id="Revue 100S"><p onclick="copyToClipboard(this)">Revue 100S</p><img src="assets/images/sdxl1.0/film/Revue 100S.jpg" alt="Revue 100S" loading="lazy" onerror="this.style.display='none'"></div></div>
+</div>
+
+<div id="lightbox">
+  <span id="lightbox-close" onclick="closeLightbox()">✕</span>
+  <span id="lightbox-prev" onclick="lbPrev()">&#8249;</span>
+  <img id="lightbox-img" src="" alt="">
+  <span id="lightbox-name"></span>
+  <span id="lightbox-next" onclick="lbNext()">&#8250;</span>
+</div>
+
+<button id="back-to-top" onclick="scrollToTop()">↑</button><div class="copied-toast" id="copied-toast">Copied!</div>
+<script>
+
+function searchArtist(){
+    const q=document.getElementById('search-bar').value.toLowerCase();
+    const res=document.getElementById('search-results');
+    if(!q){res.innerHTML='';return;}
+    const matches=["Kodak Portra 400", "Fujifilm Pro 400H", "Ilford HP5 Plus 400", "Kodak Tri-X 400", "AgfaPhoto Vista Plus 200", "Lomography Color Negative 800", "Cinestill 800T", "Fujifilm Velvia 50", "Kodak Ektar 100", "Ilford Delta 3200", "Fujifilm Neopan Acros 100", "Kentmere 100", "Rollei Retro 80S", "Kodak T-Max 100", "Foma Fomapan 100 Classic", "Ilford FP4 Plus 125", "Agfaphoto CT Precisa 100", "Lomography Lady Grey 400", "Cinestill 50D", "Fujifilm Superia X-TRA 400", "Kodak Gold 200", "Ilford Pan F Plus 50", "Kodak Ultramax 400", "Lomography X-Pro 200", "Rollei Infrared 400", "Kodak Aerochrome", "Fujichrome Provia 100F", "Kodak Vision3 500T", "Ilford Ortho Plus", "Rollei RPX 25", "Fujifilm Instax Mini", "Polaroid Originals Color", "Kodak Professional BW400CN", "Adox Silvermax 100", "Bergger Pancro 400", "Ilford SFX 200", "Kodak Ektachrome E100", "Fujifilm Industrial 100", "ORWO UN54", "Foma Fomapan R100", "Agfa Scala 200x", "Kodak Portra 160", "Fujifilm Acros II", "Ilford Delta 100", "Kodak Tmax 3200", "Cinestill BwXX", "Fujifilm Provia 400X", "Ilford XP2 Super", "Rollei Superpan 200", "Kodak Professional Vericolor III", "AgfaPhoto APX 400", "Lomography Redscale XR 50-200", "Konica Minolta Centuria Super 400", "Fujifilm FP-100C", "Kodak Ektachrome 64", "Ilford Pan 400", "Kodak High Definition 200", "Foma Fomapan 200 Creative", "Ilford Delta 400", "Agfa Vista 400", "Lomography Earl Grey 100", "Cinestill 800T", "Fujifilm Superia Venus 800", "Kodak Plus-X Pan", "Lucky New SHD 100", "Rollei Ortho 25", "Kodak Elite Chrome 100", "Fujifilm Instax Wide", "Polaroid Originals Black & White", "Kodak Vision2 200T", "Agfa Ortho 25 Professional", "Bergger BRF-400 Plus", "Ilford Multigrade IV RC", "Kodak Professional Metallic", "Konica Minolta VX 100 Super", "Rollei Digibase CN200", "Fujifilm FP-3000B", "Adox CMS 20 II", "Lomography Berlin Kino 400", "ORWO NP7", "Foma Retropan 320 Soft", "Polaroid 600", "Agfa Precisa CT 100", "Revue 100S"].filter(a=>a.toLowerCase().includes(q)).slice(0,20);
+    res.innerHTML=matches.map(a=>'<div onclick="scrollToArtist(\''+a.replace(/'/g,"\\'")+'\'">'+a+'</div>').join('');
+}
+function clearSearch(){
+    document.getElementById('search-bar').value='';
+    document.getElementById('search-results').innerHTML='';
+}
+function scrollToArtist(name){
+    const el=document.getElementById(name);
+    if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.style.outline='2px solid #aef';setTimeout(()=>el.style.outline='',2000);}
+    document.getElementById('search-results').innerHTML='';
+}
+
+document.addEventListener('DOMContentLoaded',()=>bindImgClick());
+
+// ── 라이트박스 ──
+const lb      = document.getElementById('lightbox');
+const lbImg   = document.getElementById('lightbox-img');
+const lbName  = document.getElementById('lightbox-name');
+let lbItems=[], lbIdx=0;
+
+function buildLbItems(){
+    lbItems = Array.from(document.querySelectorAll('.grid img, .image img'))
+                   .filter(img=>img.style.display!=='none' && img.complete && img.naturalWidth>0);
+}
+
+function openLightbox(img){
+    buildLbItems();
+    lbIdx = lbItems.indexOf(img);
+    if(lbIdx===-1){lbItems.unshift(img);lbIdx=0;}
+    showLb(lbIdx);
+}
+
+function showLb(idx){
+    const img = lbItems[idx];
+    if(!img) return;
+    lbImg.src   = img.src;
+    lbImg.alt   = img.alt;
+    lbName.textContent = img.alt;
+    lb.classList.add('open');
+    document.body.style.overflow='hidden';
+}
+
+function closeLightbox(){
+    lb.classList.remove('open');
+    lbImg.src='';
+    document.body.style.overflow='';
+}
+
+function lbPrev(){lbIdx=(lbIdx-1+lbItems.length)%lbItems.length;showLb(lbIdx);}
+function lbNext(){lbIdx=(lbIdx+1)%lbItems.length;showLb(lbIdx);}
+
+lb.addEventListener('click',e=>{if(e.target===lb)closeLightbox();});
+document.addEventListener('keydown',e=>{
+    if(!lb.classList.contains('open'))return;
+    if(e.key==='Escape')closeLightbox();
+    if(e.key==='ArrowLeft')lbPrev();
+    if(e.key==='ArrowRight')lbNext();
+});
+lbName.addEventListener('click',()=>{
+    navigator.clipboard.writeText(lbName.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+});
+
+// 이미지에 클릭 이벤트 등록 (동적 생성 포함)
+function bindImgClick(root){
+    (root||document).querySelectorAll('.grid img,.image img').forEach(img=>{
+        if(!img.dataset.lbBound){
+            img.dataset.lbBound='1';
+            img.addEventListener('click',()=>openLightbox(img));
+        }
+    });
+}
+
+
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+function copyToClipboard(el){
+    navigator.clipboard.writeText(el.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+}
+window.addEventListener('scroll',()=>{
+    document.getElementById('back-to-top').style.display=window.scrollY>400?'block':'none';
+});
+document.addEventListener('click',e=>{
+    if(!e.target.closest('.search-container'))
+        document.getElementById('search-results').innerHTML='';
+});
+
+</script>
+</body>
+</html>

@@ -1,60 +1,180 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>N - SDXL Artist Study</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:sans-serif;margin:0;padding:0;background:#111;color:#eee}
+.site-header{background:#1a1a2e;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid #333}
+.site-title{color:#aef;font-size:1.2em;font-weight:bold;text-decoration:none}
+.site-nav{display:flex;flex-wrap:wrap;gap:6px}
+.site-nav a{color:#ccc;text-decoration:none;padding:4px 10px;border:1px solid #444;border-radius:4px;font-size:13px}
+.site-nav a:hover,.site-nav a.active{background:#335;color:#aef;border-color:#aef}
+.page-content{padding:14px 16px}
+.intro-text{padding:6px 0 16px;line-height:1.6;color:#bbb}
+.search-container{position:relative;margin-bottom:14px}
+#search-bar{width:100%;max-width:420px;padding:8px 36px 8px 10px;font-size:15px;background:#222;color:#eee;border:1px solid #444;border-radius:4px}
+#clear-icon{position:absolute;left:396px;top:7px;cursor:pointer;font-size:22px;color:#aaa}
+#search-results{background:#222;border:1px solid #444;max-width:420px;position:absolute;z-index:100;width:100%;border-radius:0 0 4px 4px}
+#search-results div{padding:6px 10px;cursor:pointer}
+#search-results div:hover{background:#333}
+.alphabet-nav{margin-bottom:14px;display:flex;flex-wrap:wrap;gap:4px}
+.alphabet-nav a{color:#aef;text-decoration:none;padding:3px 7px;border:1px solid #444;border-radius:4px;font-size:13px}
+.alphabet-nav a:hover,.alphabet-nav a.active{background:#335;border-color:#aef}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.grid>div,.image{background:#1a1a1a;border-radius:6px;overflow:hidden;text-align:center}
+.grid>div p,.image p{padding:6px;margin:0;font-size:12px;cursor:pointer;word-break:break-word}
+.grid>div p:hover,.image p:hover{color:#aef}
+.grid>div img,.image img{width:100%;display:block;cursor:zoom-in;transition:opacity .15s}
+.grid>div img:hover,.image img:hover{opacity:.85}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.tag{background:#222;color:#ccc;border:1px solid #444;padding:5px 12px;border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s}
+.tag:hover,.tag.active{background:#335;color:#aef;border-color:#aef}
+.tag-all{background:#335;color:#aef;border-color:#aef}
+#result-count{color:#888;font-size:13px;margin-bottom:10px}
+h2{margin:0 0 12px;font-size:2em;color:#aef}
+#back-to-top{position:fixed;bottom:28px;right:28px;padding:10px 14px;background:#333;color:#eee;border:none;border-radius:50%;cursor:pointer;font-size:20px;display:none}
+#back-to-top:hover{background:#555}
+.copied-toast{position:fixed;bottom:76px;right:28px;background:#4f4;color:#000;padding:6px 14px;border-radius:4px;display:none;font-size:13px}
+
+/* ── 팝업 라이트박스 ── */
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;justify-content:center;align-items:center;flex-direction:column;gap:10px}
+#lightbox.open{display:flex}
+#lightbox img{max-width:90vw;max-height:82vh;border-radius:8px;box-shadow:0 0 40px #000;object-fit:contain}
+#lightbox-name{color:#eee;font-size:1em;text-align:center;max-width:90vw;cursor:pointer;padding:4px 12px;background:rgba(255,255,255,.08);border-radius:4px}
+#lightbox-name:hover{color:#4f4}
+#lightbox-close{position:fixed;top:18px;right:24px;font-size:2em;color:#aaa;cursor:pointer;line-height:1}
+#lightbox-close:hover{color:#fff}
+#lightbox-prev,#lightbox-next{position:fixed;top:50%;transform:translateY(-50%);font-size:2.5em;color:#aaa;cursor:pointer;user-select:none;padding:0 16px}
+#lightbox-prev{left:4px}#lightbox-next{right:4px}
+#lightbox-prev:hover,#lightbox-next:hover{color:#fff}
+</style>
+</head>
+<body>
+<header class="site-header"><a class="site-title" href="../index.html">SDXL Artist Study</a><nav class="site-nav"><a href="../index.html" class="active">🎨 Artists</a><a href="../film.html" class="">🎞 Film</a><a href="../cameras.html" class="">📷 Cameras</a><a href="../art-movements.html" class="">🖼 Movements</a><a href="../art-mediums.html" class="">✏️ Mediums</a><a href="../tags.html" class="">🏷 Tags</a></nav></header>
+<div class="page-content">
+
 <div class="search-container">
-    <input type="text" id="search-bar" placeholder="Search for an artist..." onkeyup="searchArtist()">
-    <span id="clear-icon" onclick="clearSearch()">×</span>
-    <div id="search-results"></div>
+  <input type="text" id="search-bar" placeholder="Search for an artist..." oninput="searchArtist()">
+  <span id="clear-icon" onclick="clearSearch()">×</span>
+  <div id="search-results"></div>
+</div>
+<div class="alphabet-nav"><a href="../index.html">All</a><a href="../pages/A.html" class="">A</a><a href="../pages/B.html" class="">B</a><a href="../pages/C.html" class="">C</a><a href="../pages/D.html" class="">D</a><a href="../pages/E.html" class="">E</a><a href="../pages/F.html" class="">F</a><a href="../pages/G.html" class="">G</a><a href="../pages/H.html" class="">H</a><a href="../pages/I.html" class="">I</a><a href="../pages/J.html" class="">J</a><a href="../pages/K.html" class="">K</a><a href="../pages/L.html" class="">L</a><a href="../pages/M.html" class="">M</a><a href="../pages/N.html" class="active">N</a><a href="../pages/O.html" class="">O</a><a href="../pages/P.html" class="">P</a><a href="../pages/Q.html" class="">Q</a><a href="../pages/R.html" class="">R</a><a href="../pages/S.html" class="">S</a><a href="../pages/T.html" class="">T</a><a href="../pages/U.html" class="">U</a><a href="../pages/V.html" class="">V</a><a href="../pages/W.html" class="">W</a><a href="../pages/X.html" class="">X</a><a href="../pages/Y.html" class="">Y</a><a href="../pages/Z.html" class="">Z</a></div>
+<h2>N</h2>
+<div class="grid"><div id="N.C. Wyeth"><p onclick="copyToClipboard(this)">N.C. Wyeth</p><img src="../assets/images/sdxl1.0/artists/N.C. Wyeth.jpg" alt="N.C. Wyeth" loading="lazy" onerror="this.style.display='none'"></div><div id="NC Wyeth"><p onclick="copyToClipboard(this)">NC Wyeth</p><img src="../assets/images/sdxl1.0/artists/NC Wyeth.jpg" alt="NC Wyeth" loading="lazy" onerror="this.style.display='none'"></div><div id="ND Stevenson"><p onclick="copyToClipboard(this)">ND Stevenson</p><img src="../assets/images/sdxl1.0/artists/ND Stevenson.jpg" alt="ND Stevenson" loading="lazy" onerror="this.style.display='none'"></div><div id="NHK Animation"><p onclick="copyToClipboard(this)">NHK Animation</p><img src="../assets/images/sdxl1.0/artists/NHK Animation.jpg" alt="NHK Animation" loading="lazy" onerror="this.style.display='none'"></div><div id="Nacho Carbonell"><p onclick="copyToClipboard(this)">Nacho Carbonell</p><img src="../assets/images/sdxl1.0/artists/Nacho Carbonell.jpg" alt="Nacho Carbonell" loading="lazy" onerror="this.style.display='none'"></div><div id="Nadav Kander"><p onclick="copyToClipboard(this)">Nadav Kander</p><img src="../assets/images/sdxl1.0/artists/Nadav Kander.jpg" alt="Nadav Kander" loading="lazy" onerror="this.style.display='none'"></div><div id="Nagel Patrick"><p onclick="copyToClipboard(this)">Nagel Patrick</p><img src="../assets/images/sdxl1.0/artists/Nagel Patrick.jpg" alt="Nagel Patrick" loading="lazy" onerror="this.style.display='none'"></div><div id="Najeeb Najjar"><p onclick="copyToClipboard(this)">Najeeb Najjar</p><img src="../assets/images/sdxl1.0/artists/Najeeb Najjar.jpg" alt="Najeeb Najjar" loading="lazy" onerror="this.style.display='none'"></div><div id="Nam June Paik"><p onclick="copyToClipboard(this)">Nam June Paik</p><img src="../assets/images/sdxl1.0/artists/Nam June Paik.jpg" alt="Nam June Paik" loading="lazy" onerror="this.style.display='none'"></div><div id="Nan Goldin"><p onclick="copyToClipboard(this)">Nan Goldin</p><img src="../assets/images/sdxl1.0/artists/Nan Goldin.jpg" alt="Nan Goldin" loading="lazy" onerror="this.style.display='none'"></div><div id="Naohisa Inoue"><p onclick="copyToClipboard(this)">Naohisa Inoue</p><img src="../assets/images/sdxl1.0/artists/Naohisa Inoue.jpg" alt="Naohisa Inoue" loading="lazy" onerror="this.style.display='none'"></div><div id="Naoki Urasawa"><p onclick="copyToClipboard(this)">Naoki Urasawa</p><img src="../assets/images/sdxl1.0/artists/Naoki Urasawa.jpg" alt="Naoki Urasawa" loading="lazy" onerror="this.style.display='none'"></div><div id="Naoko Takeuchi"><p onclick="copyToClipboard(this)">Naoko Takeuchi</p><img src="../assets/images/sdxl1.0/artists/Naoko Takeuchi.jpg" alt="Naoko Takeuchi" loading="lazy" onerror="this.style.display='none'"></div><div id="Naomi Okubo"><p onclick="copyToClipboard(this)">Naomi Okubo</p><img src="../assets/images/sdxl1.0/artists/Naomi Okubo.jpg" alt="Naomi Okubo" loading="lazy" onerror="this.style.display='none'"></div><div id="Naomi Tydeman"><p onclick="copyToClipboard(this)">Naomi Tydeman</p><img src="../assets/images/sdxl1.0/artists/Naomi Tydeman.jpg" alt="Naomi Tydeman" loading="lazy" onerror="this.style.display='none'"></div><div id="Naoto Hattori"><p onclick="copyToClipboard(this)">Naoto Hattori</p><img src="../assets/images/sdxl1.0/artists/Naoto Hattori.jpg" alt="Naoto Hattori" loading="lazy" onerror="this.style.display='none'"></div><div id="Naoyuki Hayashi"><p onclick="copyToClipboard(this)">Naoyuki Hayashi</p><img src="../assets/images/sdxl1.0/artists/Naoyuki Hayashi.jpg" alt="Naoyuki Hayashi" loading="lazy" onerror="this.style.display='none'"></div><div id="Naoyuki Kato"><p onclick="copyToClipboard(this)">Naoyuki Kato</p><img src="../assets/images/sdxl1.0/artists/Naoyuki Kato.jpg" alt="Naoyuki Kato" loading="lazy" onerror="this.style.display='none'"></div><div id="Narayan Shridhar Bendre"><p onclick="copyToClipboard(this)">Narayan Shridhar Bendre</p><img src="../assets/images/sdxl1.0/artists/Narayan Shridhar Bendre.jpg" alt="Narayan Shridhar Bendre" loading="lazy" onerror="this.style.display='none'"></div><div id="Natalia Black"><p onclick="copyToClipboard(this)">Natalia Black</p><img src="../assets/images/sdxl1.0/artists/Natalia Black.jpg" alt="Natalia Black" loading="lazy" onerror="this.style.display='none'"></div><div id="Natalia Drepina"><p onclick="copyToClipboard(this)">Natalia Drepina</p><img src="../assets/images/sdxl1.0/artists/Natalia Drepina.jpg" alt="Natalia Drepina" loading="lazy" onerror="this.style.display='none'"></div><div id="Natalia Goncharova"><p onclick="copyToClipboard(this)">Natalia Goncharova</p><img src="../assets/images/sdxl1.0/artists/Natalia Goncharova.jpg" alt="Natalia Goncharova" loading="lazy" onerror="this.style.display='none'"></div><div id="Natalia Rak"><p onclick="copyToClipboard(this)">Natalia Rak</p><img src="../assets/images/sdxl1.0/artists/Natalia Rak.jpg" alt="Natalia Rak" loading="lazy" onerror="this.style.display='none'"></div><div id="Natalie Shau"><p onclick="copyToClipboard(this)">Natalie Shau</p><img src="../assets/images/sdxl1.0/artists/Natalie Shau.jpg" alt="Natalie Shau" loading="lazy" onerror="this.style.display='none'"></div><div id="Nathan Coley"><p onclick="copyToClipboard(this)">Nathan Coley</p><img src="../assets/images/sdxl1.0/artists/Nathan Coley.jpg" alt="Nathan Coley" loading="lazy" onerror="this.style.display='none'"></div><div id="Nathan Spoor"><p onclick="copyToClipboard(this)">Nathan Spoor</p><img src="../assets/images/sdxl1.0/artists/Nathan Spoor.jpg" alt="Nathan Spoor" loading="lazy" onerror="this.style.display='none'"></div><div id="Nathan Wirth"><p onclick="copyToClipboard(this)">Nathan Wirth</p><img src="../assets/images/sdxl1.0/artists/Nathan Wirth.jpg" alt="Nathan Wirth" loading="lazy" onerror="this.style.display='none'"></div><div id="Nathaniel Currier"><p onclick="copyToClipboard(this)">Nathaniel Currier</p><img src="../assets/images/sdxl1.0/artists/Nathaniel Currier.jpg" alt="Nathaniel Currier" loading="lazy" onerror="this.style.display='none'"></div><div id="Neal Adams"><p onclick="copyToClipboard(this)">Neal Adams</p><img src="../assets/images/sdxl1.0/artists/Neal Adams.jpg" alt="Neal Adams" loading="lazy" onerror="this.style.display='none'"></div><div id="Neil Blevins"><p onclick="copyToClipboard(this)">Neil Blevins</p><img src="../assets/images/sdxl1.0/artists/Neil Blevins.jpg" alt="Neil Blevins" loading="lazy" onerror="this.style.display='none'"></div><div id="Neil Boyle"><p onclick="copyToClipboard(this)">Neil Boyle</p><img src="../assets/images/sdxl1.0/artists/Neil Boyle.jpg" alt="Neil Boyle" loading="lazy" onerror="this.style.display='none'"></div><div id="Neil Gaiman"><p onclick="copyToClipboard(this)">Neil Gaiman</p><img src="../assets/images/sdxl1.0/artists/Neil Gaiman.jpg" alt="Neil Gaiman" loading="lazy" onerror="this.style.display='none'"></div><div id="Neil Welliver"><p onclick="copyToClipboard(this)">Neil Welliver</p><img src="../assets/images/sdxl1.0/artists/Neil Welliver.jpg" alt="Neil Welliver" loading="lazy" onerror="this.style.display='none'"></div><div id="Nele Zirnite"><p onclick="copyToClipboard(this)">Nele Zirnite</p><img src="../assets/images/sdxl1.0/artists/Nele Zirnite.jpg" alt="Nele Zirnite" loading="lazy" onerror="this.style.display='none'"></div><div id="Nell Dorr"><p onclick="copyToClipboard(this)">Nell Dorr</p><img src="../assets/images/sdxl1.0/artists/Nell Dorr.jpg" alt="Nell Dorr" loading="lazy" onerror="this.style.display='none'"></div><div id="Nelleke Pieters"><p onclick="copyToClipboard(this)">Nelleke Pieters</p><img src="../assets/images/sdxl1.0/artists/Nelleke Pieters.jpg" alt="Nelleke Pieters" loading="lazy" onerror="this.style.display='none'"></div><div id="Nene Thomas"><p onclick="copyToClipboard(this)">Nene Thomas</p><img src="../assets/images/sdxl1.0/artists/Nene Thomas.jpg" alt="Nene Thomas" loading="lazy" onerror="this.style.display='none'"></div><div id="Nettie M. Pitre"><p onclick="copyToClipboard(this)">Nettie M. Pitre</p><img src="../assets/images/sdxl1.0/artists/Nettie M. Pitre.jpg" alt="Nettie M. Pitre" loading="lazy" onerror="this.style.display='none'"></div><div id="Ni Chuanjing"><p onclick="copyToClipboard(this)">Ni Chuanjing</p><img src="../assets/images/sdxl1.0/artists/Ni Chuanjing.jpg" alt="Ni Chuanjing" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicholas Busciglio"><p onclick="copyToClipboard(this)">Nicholas Busciglio</p><img src="../assets/images/sdxl1.0/artists/Nicholas Busciglio.jpg" alt="Nicholas Busciglio" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicholas Hely Hutchinson"><p onclick="copyToClipboard(this)">Nicholas Hely Hutchinson</p><img src="../assets/images/sdxl1.0/artists/Nicholas Hely Hutchinson.jpg" alt="Nicholas Hely Hutchinson" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicholas Hilliard"><p onclick="copyToClipboard(this)">Nicholas Hilliard</p><img src="../assets/images/sdxl1.0/artists/Nicholas Hilliard.jpg" alt="Nicholas Hilliard" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicholas Hughes"><p onclick="copyToClipboard(this)">Nicholas Hughes</p><img src="../assets/images/sdxl1.0/artists/Nicholas Hughes.jpg" alt="Nicholas Hughes" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicholas Kahn"><p onclick="copyToClipboard(this)">Nicholas Kahn</p><img src="../assets/images/sdxl1.0/artists/Nicholas Kahn.jpg" alt="Nicholas Kahn" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicholas Roerich"><p onclick="copyToClipboard(this)">Nicholas Roerich</p><img src="../assets/images/sdxl1.0/artists/Nicholas Roerich.jpg" alt="Nicholas Roerich" loading="lazy" onerror="this.style.display='none'"></div><div id="Nick Alm"><p onclick="copyToClipboard(this)">Nick Alm</p><img src="../assets/images/sdxl1.0/artists/Nick Alm.jpg" alt="Nick Alm" loading="lazy" onerror="this.style.display='none'"></div><div id="Nick Knight"><p onclick="copyToClipboard(this)">Nick Knight</p><img src="../assets/images/sdxl1.0/artists/Nick Knight.jpg" alt="Nick Knight" loading="lazy" onerror="this.style.display='none'"></div><div id="Nick Parrino"><p onclick="copyToClipboard(this)">Nick Parrino</p><img src="../assets/images/sdxl1.0/artists/Nick Parrino.jpg" alt="Nick Parrino" loading="lazy" onerror="this.style.display='none'"></div><div id="Nick Pyle"><p onclick="copyToClipboard(this)">Nick Pyle</p><img src="../assets/images/sdxl1.0/artists/Nick Pyle.jpg" alt="Nick Pyle" loading="lazy" onerror="this.style.display='none'"></div><div id="Nick Sharratt"><p onclick="copyToClipboard(this)">Nick Sharratt</p><img src="../assets/images/sdxl1.0/artists/Nick Sharratt.jpg" alt="Nick Sharratt" loading="lazy" onerror="this.style.display='none'"></div><div id="Nick Silva"><p onclick="copyToClipboard(this)">Nick Silva</p><img src="../assets/images/sdxl1.0/artists/Nick Silva.jpg" alt="Nick Silva" loading="lazy" onerror="this.style.display='none'"></div><div id="Nick Veasey"><p onclick="copyToClipboard(this)">Nick Veasey</p><img src="../assets/images/sdxl1.0/artists/Nick Veasey.jpg" alt="Nick Veasey" loading="lazy" onerror="this.style.display='none'"></div><div id="Nick Walker"><p onclick="copyToClipboard(this)">Nick Walker</p><img src="../assets/images/sdxl1.0/artists/Nick Walker.jpg" alt="Nick Walker" loading="lazy" onerror="this.style.display='none'"></div><div id="Nickolas Muray"><p onclick="copyToClipboard(this)">Nickolas Muray</p><img src="../assets/images/sdxl1.0/artists/Nickolas Muray.jpg" alt="Nickolas Muray" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicola Samori"><p onclick="copyToClipboard(this)">Nicola Samori</p><img src="../assets/images/sdxl1.0/artists/Nicola Samori.jpg" alt="Nicola Samori" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicolaes Maes"><p onclick="copyToClipboard(this)">Nicolaes Maes</p><img src="../assets/images/sdxl1.0/artists/Nicolaes Maes.jpg" alt="Nicolaes Maes" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicolaes van Verendael"><p onclick="copyToClipboard(this)">Nicolaes van Verendael</p><img src="../assets/images/sdxl1.0/artists/Nicolaes van Verendael.jpg" alt="Nicolaes van Verendael" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicolai Abraham Abildgaard"><p onclick="copyToClipboard(this)">Nicolai Abraham Abildgaard</p><img src="../assets/images/sdxl1.0/artists/Nicolai Abraham Abildgaard.jpg" alt="Nicolai Abraham Abildgaard" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicolas Bournay"><p onclick="copyToClipboard(this)">Nicolas Bournay</p><img src="../assets/images/sdxl1.0/artists/Nicolas Bournay.jpg" alt="Nicolas Bournay" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicolas Bruno"><p onclick="copyToClipboard(this)">Nicolas Bruno</p><img src="../assets/images/sdxl1.0/artists/Nicolas Bruno.jpg" alt="Nicolas Bruno" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicolas Delort"><p onclick="copyToClipboard(this)">Nicolas Delort</p><img src="../assets/images/sdxl1.0/artists/Nicolas Delort.jpg" alt="Nicolas Delort" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicolas Mignard"><p onclick="copyToClipboard(this)">Nicolas Mignard</p><img src="../assets/images/sdxl1.0/artists/Nicolas Mignard.jpg" alt="Nicolas Mignard" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicolas Party"><p onclick="copyToClipboard(this)">Nicolas Party</p><img src="../assets/images/sdxl1.0/artists/Nicolas Party.jpg" alt="Nicolas Party" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicolas Poussin"><p onclick="copyToClipboard(this)">Nicolas Poussin</p><img src="../assets/images/sdxl1.0/artists/Nicolas Poussin.jpg" alt="Nicolas Poussin" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicolas Weis"><p onclick="copyToClipboard(this)">Nicolas Weis</p><img src="../assets/images/sdxl1.0/artists/Nicolas Weis.jpg" alt="Nicolas Weis" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicolas de Stael"><p onclick="copyToClipboard(this)">Nicolas de Stael</p><img src="../assets/images/sdxl1.0/artists/Nicolas de Stael.jpg" alt="Nicolas de Stael" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicole Eisenman"><p onclick="copyToClipboard(this)">Nicole Eisenman</p><img src="../assets/images/sdxl1.0/artists/Nicole Eisenman.jpg" alt="Nicole Eisenman" loading="lazy" onerror="this.style.display='none'"></div><div id="Nicoletta Ceccoli"><p onclick="copyToClipboard(this)">Nicoletta Ceccoli</p><img src="../assets/images/sdxl1.0/artists/Nicoletta Ceccoli.jpg" alt="Nicoletta Ceccoli" loading="lazy" onerror="this.style.display='none'"></div><div id="Nigel Jackson"><p onclick="copyToClipboard(this)">Nigel Jackson</p><img src="../assets/images/sdxl1.0/artists/Nigel Jackson.jpg" alt="Nigel Jackson" loading="lazy" onerror="this.style.display='none'"></div><div id="Nigel Ramsey Newton"><p onclick="copyToClipboard(this)">Nigel Ramsey Newton</p><img src="../assets/images/sdxl1.0/artists/Nigel Ramsey Newton.jpg" alt="Nigel Ramsey Newton" loading="lazy" onerror="this.style.display='none'"></div><div id="Nigel van Wieck"><p onclick="copyToClipboard(this)">Nigel van Wieck</p><img src="../assets/images/sdxl1.0/artists/Nigel van Wieck.jpg" alt="Nigel van Wieck" loading="lazy" onerror="this.style.display='none'"></div><div id="Nike Savvas"><p onclick="copyToClipboard(this)">Nike Savvas</p><img src="../assets/images/sdxl1.0/artists/Nike Savvas.jpg" alt="Nike Savvas" loading="lazy" onerror="this.style.display='none'"></div><div id="Nikita Veprikov"><p onclick="copyToClipboard(this)">Nikita Veprikov</p><img src="../assets/images/sdxl1.0/artists/Nikita Veprikov.jpg" alt="Nikita Veprikov" loading="lazy" onerror="this.style.display='none'"></div><div id="Niko Anttila"><p onclick="copyToClipboard(this)">Niko Anttila</p><img src="../assets/images/sdxl1.0/artists/Niko Anttila.jpg" alt="Niko Anttila" loading="lazy" onerror="this.style.display='none'"></div><div id="Niko Henrichon"><p onclick="copyToClipboard(this)">Niko Henrichon</p><img src="../assets/images/sdxl1.0/artists/Niko Henrichon.jpg" alt="Niko Henrichon" loading="lazy" onerror="this.style.display='none'"></div><div id="Nikolai Astrup"><p onclick="copyToClipboard(this)">Nikolai Astrup</p><img src="../assets/images/sdxl1.0/artists/Nikolai Astrup.jpg" alt="Nikolai Astrup" loading="lazy" onerror="this.style.display='none'"></div><div id="Nikolai Ge"><p onclick="copyToClipboard(this)">Nikolai Ge</p><img src="../assets/images/sdxl1.0/artists/Nikolai Ge.jpg" alt="Nikolai Ge" loading="lazy" onerror="this.style.display='none'"></div><div id="Nikolai Kolchitsky"><p onclick="copyToClipboard(this)">Nikolai Kolchitsky</p><img src="../assets/images/sdxl1.0/artists/Nikolai Kolchitsky.jpg" alt="Nikolai Kolchitsky" loading="lazy" onerror="this.style.display='none'"></div><div id="Nikolai Lockertsen"><p onclick="copyToClipboard(this)">Nikolai Lockertsen</p><img src="../assets/images/sdxl1.0/artists/Nikolai Lockertsen.jpg" alt="Nikolai Lockertsen" loading="lazy" onerror="this.style.display='none'"></div><div id="Nikolaos Gyzis"><p onclick="copyToClipboard(this)">Nikolaos Gyzis</p><img src="../assets/images/sdxl1.0/artists/Nikolaos Gyzis.jpg" alt="Nikolaos Gyzis" loading="lazy" onerror="this.style.display='none'"></div><div id="Nikolay Makovsky"><p onclick="copyToClipboard(this)">Nikolay Makovsky</p><img src="../assets/images/sdxl1.0/artists/Nikolay Makovsky.jpg" alt="Nikolay Makovsky" loading="lazy" onerror="this.style.display='none'"></div><div id="Nikolina Petolas"><p onclick="copyToClipboard(this)">Nikolina Petolas</p><img src="../assets/images/sdxl1.0/artists/Nikolina Petolas.jpg" alt="Nikolina Petolas" loading="lazy" onerror="this.style.display='none'"></div><div id="Nils Hamm"><p onclick="copyToClipboard(this)">Nils Hamm</p><img src="../assets/images/sdxl1.0/artists/Nils Hamm.jpg" alt="Nils Hamm" loading="lazy" onerror="this.style.display='none'"></div><div id="Nils von Dardel"><p onclick="copyToClipboard(this)">Nils von Dardel</p><img src="../assets/images/sdxl1.0/artists/Nils von Dardel.jpg" alt="Nils von Dardel" loading="lazy" onerror="this.style.display='none'"></div><div id="Nina Leen"><p onclick="copyToClipboard(this)">Nina Leen</p><img src="../assets/images/sdxl1.0/artists/Nina Leen.jpg" alt="Nina Leen" loading="lazy" onerror="this.style.display='none'"></div><div id="Nina Valetova"><p onclick="copyToClipboard(this)">Nina Valetova</p><img src="../assets/images/sdxl1.0/artists/Nina Valetova.jpg" alt="Nina Valetova" loading="lazy" onerror="this.style.display='none'"></div><div id="Niyazi Selimoglu"><p onclick="copyToClipboard(this)">Niyazi Selimoglu</p><img src="../assets/images/sdxl1.0/artists/Niyazi Selimoglu.jpg" alt="Niyazi Selimoglu" loading="lazy" onerror="this.style.display='none'"></div><div id="Njideka Akunyili Crosby"><p onclick="copyToClipboard(this)">Njideka Akunyili Crosby</p><img src="../assets/images/sdxl1.0/artists/Njideka Akunyili Crosby.jpg" alt="Njideka Akunyili Crosby" loading="lazy" onerror="this.style.display='none'"></div><div id="Noah Bradley"><p onclick="copyToClipboard(this)">Noah Bradley</p><img src="../assets/images/sdxl1.0/artists/Noah Bradley.jpg" alt="Noah Bradley" loading="lazy" onerror="this.style.display='none'"></div><div id="Nobuo Sekine"><p onclick="copyToClipboard(this)">Nobuo Sekine</p><img src="../assets/images/sdxl1.0/artists/Nobuo Sekine.jpg" alt="Nobuo Sekine" loading="lazy" onerror="this.style.display='none'"></div><div id="Nobuyoshi Araki"><p onclick="copyToClipboard(this)">Nobuyoshi Araki</p><img src="../assets/images/sdxl1.0/artists/Nobuyoshi Araki.jpg" alt="Nobuyoshi Araki" loading="lazy" onerror="this.style.display='none'"></div><div id="Noell Oszvald"><p onclick="copyToClipboard(this)">Noell Oszvald</p><img src="../assets/images/sdxl1.0/artists/Noell Oszvald.jpg" alt="Noell Oszvald" loading="lazy" onerror="this.style.display='none'"></div><div id="Noelle Stevenson"><p onclick="copyToClipboard(this)">Noelle Stevenson</p><img src="../assets/images/sdxl1.0/artists/Noelle Stevenson.jpg" alt="Noelle Stevenson" loading="lazy" onerror="this.style.display='none'"></div><div id="Nora Heysen"><p onclick="copyToClipboard(this)">Nora Heysen</p><img src="../assets/images/sdxl1.0/artists/Nora Heysen.jpg" alt="Nora Heysen" loading="lazy" onerror="this.style.display='none'"></div><div id="Norah McGuinness"><p onclick="copyToClipboard(this)">Norah McGuinness</p><img src="../assets/images/sdxl1.0/artists/Norah McGuinness.jpg" alt="Norah McGuinness" loading="lazy" onerror="this.style.display='none'"></div><div id="Noriyoshi Ohrai"><p onclick="copyToClipboard(this)">Noriyoshi Ohrai</p><img src="../assets/images/sdxl1.0/artists/Noriyoshi Ohrai.jpg" alt="Noriyoshi Ohrai" loading="lazy" onerror="this.style.display='none'"></div><div id="Norm Rapmund"><p onclick="copyToClipboard(this)">Norm Rapmund</p><img src="../assets/images/sdxl1.0/artists/Norm Rapmund.jpg" alt="Norm Rapmund" loading="lazy" onerror="this.style.display='none'"></div><div id="Norman Ackroyd"><p onclick="copyToClipboard(this)">Norman Ackroyd</p><img src="../assets/images/sdxl1.0/artists/Norman Ackroyd.jpg" alt="Norman Ackroyd" loading="lazy" onerror="this.style.display='none'"></div><div id="Norman Bluhm"><p onclick="copyToClipboard(this)">Norman Bluhm</p><img src="../assets/images/sdxl1.0/artists/Norman Bluhm.jpg" alt="Norman Bluhm" loading="lazy" onerror="this.style.display='none'"></div><div id="Norman Cornish"><p onclick="copyToClipboard(this)">Norman Cornish</p><img src="../assets/images/sdxl1.0/artists/Norman Cornish.jpg" alt="Norman Cornish" loading="lazy" onerror="this.style.display='none'"></div><div id="Norman Foster"><p onclick="copyToClipboard(this)">Norman Foster</p><img src="../assets/images/sdxl1.0/artists/Norman Foster.jpg" alt="Norman Foster" loading="lazy" onerror="this.style.display='none'"></div><div id="Norman Lewis"><p onclick="copyToClipboard(this)">Norman Lewis</p><img src="../assets/images/sdxl1.0/artists/Norman Lewis.jpg" alt="Norman Lewis" loading="lazy" onerror="this.style.display='none'"></div><div id="Norman Lindsay"><p onclick="copyToClipboard(this)">Norman Lindsay</p><img src="../assets/images/sdxl1.0/artists/Norman Lindsay.jpg" alt="Norman Lindsay" loading="lazy" onerror="this.style.display='none'"></div><div id="Norman Parkinson"><p onclick="copyToClipboard(this)">Norman Parkinson</p><img src="../assets/images/sdxl1.0/artists/Norman Parkinson.jpg" alt="Norman Parkinson" loading="lazy" onerror="this.style.display='none'"></div><div id="Norman Rockwell"><p onclick="copyToClipboard(this)">Norman Rockwell</p><img src="../assets/images/sdxl1.0/artists/Norman Rockwell.jpg" alt="Norman Rockwell" loading="lazy" onerror="this.style.display='none'"></div><div id="Norman Saunders"><p onclick="copyToClipboard(this)">Norman Saunders</p><img src="../assets/images/sdxl1.0/artists/Norman Saunders.jpg" alt="Norman Saunders" loading="lazy" onerror="this.style.display='none'"></div><div id="Norman Wilfred Lewis"><p onclick="copyToClipboard(this)">Norman Wilfred Lewis</p><img src="../assets/images/sdxl1.0/artists/Norman Wilfred Lewis.jpg" alt="Norman Wilfred Lewis" loading="lazy" onerror="this.style.display='none'"></div><div id="Norris Embry"><p onclick="copyToClipboard(this)">Norris Embry</p><img src="../assets/images/sdxl1.0/artists/Norris Embry.jpg" alt="Norris Embry" loading="lazy" onerror="this.style.display='none'"></div><div id="Norval Morrisseau"><p onclick="copyToClipboard(this)">Norval Morrisseau</p><img src="../assets/images/sdxl1.0/artists/Norval Morrisseau.jpg" alt="Norval Morrisseau" loading="lazy" onerror="this.style.display='none'"></div><div id="Noval Morrisseau"><p onclick="copyToClipboard(this)">Noval Morrisseau</p><img src="../assets/images/sdxl1.0/artists/Noval Morrisseau.jpg" alt="Noval Morrisseau" loading="lazy" onerror="this.style.display='none'"></div><div id="Nusch Éluard"><p onclick="copyToClipboard(this)">Nusch Éluard</p><img src="../assets/images/sdxl1.0/artists/Nusch Éluard.jpg" alt="Nusch Éluard" loading="lazy" onerror="this.style.display='none'"></div></div>
 </div>
 
-<link rel="stylesheet" href="{{ '/main.css' | relative_url }}">
-{% assign letter = 'N' %}
-<div class="alphabet-nav">
-    <a href="{{ site.baseurl }}/index.html">All</a>
-    <a href="{{ site.baseurl }}/pages/A.html">A</a>
-    <a href="{{ site.baseurl }}/pages/B.html">B</a>
-    <a href="{{ site.baseurl }}/pages/C.html">C</a>
-    <a href="{{ site.baseurl }}/pages/D.html">D</a>
-    <a href="{{ site.baseurl }}/pages/E.html">E</a>
-    <a href="{{ site.baseurl }}/pages/F.html">F</a>
-    <a href="{{ site.baseurl }}/pages/G.html">G</a>
-    <a href="{{ site.baseurl }}/pages/H.html">H</a>
-    <a href="{{ site.baseurl }}/pages/I.html">I</a>
-    <a href="{{ site.baseurl }}/pages/J.html">J</a>
-    <a href="{{ site.baseurl }}/pages/K.html">K</a>
-    <a href="{{ site.baseurl }}/pages/L.html">L</a>
-    <a href="{{ site.baseurl }}/pages/M.html">M</a>
-    <a href="{{ site.baseurl }}/pages/N.html">N</a>
-    <a href="{{ site.baseurl }}/pages/O.html">O</a>
-    <a href="{{ site.baseurl }}/pages/P.html">P</a>
-    <a href="{{ site.baseurl }}/pages/Q.html">Q</a>
-    <a href="{{ site.baseurl }}/pages/R.html">R</a>
-    <a href="{{ site.baseurl }}/pages/S.html">S</a>
-    <a href="{{ site.baseurl }}/pages/T.html">T</a>
-    <a href="{{ site.baseurl }}/pages/U.html">U</a>
-    <a href="{{ site.baseurl }}/pages/V.html">V</a>
-    <a href="{{ site.baseurl }}/pages/W.html">W</a>
-    <a href="{{ site.baseurl }}/pages/X.html">X</a>
-    <a href="{{ site.baseurl }}/pages/Y.html">Y</a>
-    <a href="{{ site.baseurl }}/pages/Z.html">Z</a>
+<div id="lightbox">
+  <span id="lightbox-close" onclick="closeLightbox()">✕</span>
+  <span id="lightbox-prev" onclick="lbPrev()">&#8249;</span>
+  <img id="lightbox-img" src="" alt="">
+  <span id="lightbox-name"></span>
+  <span id="lightbox-next" onclick="lbNext()">&#8250;</span>
 </div>
 
-<h2>{{ letter }}</h2>
+<button id="back-to-top" onclick="scrollToTop()">↑</button><div class="copied-toast" id="copied-toast">Copied!</div>
+<script>
 
-<div class="grid">
-    {% for image in site.static_files %}
-        {% assign filename = image.name | remove: '.jpg' %}
-        {% assign first_char = filename | slice: 0 | upcase %}
-        {% if image.path contains 'artists' and first_char == letter %}
-            <div id="{{ image.name | remove: '.jpg' }}">
-                <p onclick="copyToClipboard(this)">{{ image.name | remove: '.jpg' }}</p>
-                <img src="{{ site.baseurl }}{{ image.path }}" alt="{{ image.name }}">
-            </div>
-        {% endif %}
-    {% endfor %}
-    </div>
+function searchArtist(){
+    const q=document.getElementById('search-bar').value.toLowerCase();
+    const res=document.getElementById('search-results');
+    if(!q){res.innerHTML='';return;}
+    const matches=["N.C. Wyeth", "NC Wyeth", "ND Stevenson", "NHK Animation", "Nacho Carbonell", "Nadav Kander", "Nagel Patrick", "Najeeb Najjar", "Nam June Paik", "Nan Goldin", "Naohisa Inoue", "Naoki Urasawa", "Naoko Takeuchi", "Naomi Okubo", "Naomi Tydeman", "Naoto Hattori", "Naoyuki Hayashi", "Naoyuki Kato", "Narayan Shridhar Bendre", "Natalia Black", "Natalia Drepina", "Natalia Goncharova", "Natalia Rak", "Natalie Shau", "Nathan Coley", "Nathan Spoor", "Nathan Wirth", "Nathaniel Currier", "Neal Adams", "Neil Blevins", "Neil Boyle", "Neil Gaiman", "Neil Welliver", "Nele Zirnite", "Nell Dorr", "Nelleke Pieters", "Nene Thomas", "Nettie M. Pitre", "Ni Chuanjing", "Nicholas Busciglio", "Nicholas Hely Hutchinson", "Nicholas Hilliard", "Nicholas Hughes", "Nicholas Kahn", "Nicholas Roerich", "Nick Alm", "Nick Knight", "Nick Parrino", "Nick Pyle", "Nick Sharratt", "Nick Silva", "Nick Veasey", "Nick Walker", "Nickolas Muray", "Nicola Samori", "Nicolaes Maes", "Nicolaes van Verendael", "Nicolai Abraham Abildgaard", "Nicolas Bournay", "Nicolas Bruno", "Nicolas Delort", "Nicolas Mignard", "Nicolas Party", "Nicolas Poussin", "Nicolas Weis", "Nicolas de Stael", "Nicole Eisenman", "Nicoletta Ceccoli", "Nigel Jackson", "Nigel Ramsey Newton", "Nigel van Wieck", "Nike Savvas", "Nikita Veprikov", "Niko Anttila", "Niko Henrichon", "Nikolai Astrup", "Nikolai Ge", "Nikolai Kolchitsky", "Nikolai Lockertsen", "Nikolaos Gyzis", "Nikolay Makovsky", "Nikolina Petolas", "Nils Hamm", "Nils von Dardel", "Nina Leen", "Nina Valetova", "Niyazi Selimoglu", "Njideka Akunyili Crosby", "Noah Bradley", "Nobuo Sekine", "Nobuyoshi Araki", "Noell Oszvald", "Noelle Stevenson", "Nora Heysen", "Norah McGuinness", "Noriyoshi Ohrai", "Norm Rapmund", "Norman Ackroyd", "Norman Bluhm", "Norman Cornish", "Norman Foster", "Norman Lewis", "Norman Lindsay", "Norman Parkinson", "Norman Rockwell", "Norman Saunders", "Norman Wilfred Lewis", "Norris Embry", "Norval Morrisseau", "Noval Morrisseau", "Nusch Éluard"].filter(a=>a.toLowerCase().includes(q)).slice(0,20);
+    res.innerHTML=matches.map(a=>'<div onclick="scrollToArtist(\''+a.replace(/'/g,"\\'")+'\'">'+a+'</div>').join('');
+}
+function clearSearch(){
+    document.getElementById('search-bar').value='';
+    document.getElementById('search-results').innerHTML='';
+}
+function scrollToArtist(name){
+    const el=document.getElementById(name);
+    if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.style.outline='2px solid #aef';setTimeout(()=>el.style.outline='',2000);}
+    document.getElementById('search-results').innerHTML='';
+}
 
-<button id="back-to-top" onclick="scrollToTop()">↑</button>
+document.addEventListener('DOMContentLoaded',()=>bindImgClick());
 
-<script src="{{ '/assets/js/script.js' | relative_url }}"></script>
+// ── 라이트박스 ──
+const lb      = document.getElementById('lightbox');
+const lbImg   = document.getElementById('lightbox-img');
+const lbName  = document.getElementById('lightbox-name');
+let lbItems=[], lbIdx=0;
+
+function buildLbItems(){
+    lbItems = Array.from(document.querySelectorAll('.grid img, .image img'))
+                   .filter(img=>img.style.display!=='none' && img.complete && img.naturalWidth>0);
+}
+
+function openLightbox(img){
+    buildLbItems();
+    lbIdx = lbItems.indexOf(img);
+    if(lbIdx===-1){lbItems.unshift(img);lbIdx=0;}
+    showLb(lbIdx);
+}
+
+function showLb(idx){
+    const img = lbItems[idx];
+    if(!img) return;
+    lbImg.src   = img.src;
+    lbImg.alt   = img.alt;
+    lbName.textContent = img.alt;
+    lb.classList.add('open');
+    document.body.style.overflow='hidden';
+}
+
+function closeLightbox(){
+    lb.classList.remove('open');
+    lbImg.src='';
+    document.body.style.overflow='';
+}
+
+function lbPrev(){lbIdx=(lbIdx-1+lbItems.length)%lbItems.length;showLb(lbIdx);}
+function lbNext(){lbIdx=(lbIdx+1)%lbItems.length;showLb(lbIdx);}
+
+lb.addEventListener('click',e=>{if(e.target===lb)closeLightbox();});
+document.addEventListener('keydown',e=>{
+    if(!lb.classList.contains('open'))return;
+    if(e.key==='Escape')closeLightbox();
+    if(e.key==='ArrowLeft')lbPrev();
+    if(e.key==='ArrowRight')lbNext();
+});
+lbName.addEventListener('click',()=>{
+    navigator.clipboard.writeText(lbName.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+});
+
+// 이미지에 클릭 이벤트 등록 (동적 생성 포함)
+function bindImgClick(root){
+    (root||document).querySelectorAll('.grid img,.image img').forEach(img=>{
+        if(!img.dataset.lbBound){
+            img.dataset.lbBound='1';
+            img.addEventListener('click',()=>openLightbox(img));
+        }
+    });
+}
+
+
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+function copyToClipboard(el){
+    navigator.clipboard.writeText(el.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+}
+window.addEventListener('scroll',()=>{
+    document.getElementById('back-to-top').style.display=window.scrollY>400?'block':'none';
+});
+document.addEventListener('click',e=>{
+    if(!e.target.closest('.search-container'))
+        document.getElementById('search-results').innerHTML='';
+});
+
+</script>
+</body>
+</html>

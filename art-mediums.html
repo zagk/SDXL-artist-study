@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Art Mediums - SDXL Artist Study</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:sans-serif;margin:0;padding:0;background:#111;color:#eee}
+.site-header{background:#1a1a2e;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid #333}
+.site-title{color:#aef;font-size:1.2em;font-weight:bold;text-decoration:none}
+.site-nav{display:flex;flex-wrap:wrap;gap:6px}
+.site-nav a{color:#ccc;text-decoration:none;padding:4px 10px;border:1px solid #444;border-radius:4px;font-size:13px}
+.site-nav a:hover,.site-nav a.active{background:#335;color:#aef;border-color:#aef}
+.page-content{padding:14px 16px}
+.intro-text{padding:6px 0 16px;line-height:1.6;color:#bbb}
+.search-container{position:relative;margin-bottom:14px}
+#search-bar{width:100%;max-width:420px;padding:8px 36px 8px 10px;font-size:15px;background:#222;color:#eee;border:1px solid #444;border-radius:4px}
+#clear-icon{position:absolute;left:396px;top:7px;cursor:pointer;font-size:22px;color:#aaa}
+#search-results{background:#222;border:1px solid #444;max-width:420px;position:absolute;z-index:100;width:100%;border-radius:0 0 4px 4px}
+#search-results div{padding:6px 10px;cursor:pointer}
+#search-results div:hover{background:#333}
+.alphabet-nav{margin-bottom:14px;display:flex;flex-wrap:wrap;gap:4px}
+.alphabet-nav a{color:#aef;text-decoration:none;padding:3px 7px;border:1px solid #444;border-radius:4px;font-size:13px}
+.alphabet-nav a:hover,.alphabet-nav a.active{background:#335;border-color:#aef}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.grid>div,.image{background:#1a1a1a;border-radius:6px;overflow:hidden;text-align:center}
+.grid>div p,.image p{padding:6px;margin:0;font-size:12px;cursor:pointer;word-break:break-word}
+.grid>div p:hover,.image p:hover{color:#aef}
+.grid>div img,.image img{width:100%;display:block;cursor:zoom-in;transition:opacity .15s}
+.grid>div img:hover,.image img:hover{opacity:.85}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.tag{background:#222;color:#ccc;border:1px solid #444;padding:5px 12px;border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s}
+.tag:hover,.tag.active{background:#335;color:#aef;border-color:#aef}
+.tag-all{background:#335;color:#aef;border-color:#aef}
+#result-count{color:#888;font-size:13px;margin-bottom:10px}
+h2{margin:0 0 12px;font-size:2em;color:#aef}
+#back-to-top{position:fixed;bottom:28px;right:28px;padding:10px 14px;background:#333;color:#eee;border:none;border-radius:50%;cursor:pointer;font-size:20px;display:none}
+#back-to-top:hover{background:#555}
+.copied-toast{position:fixed;bottom:76px;right:28px;background:#4f4;color:#000;padding:6px 14px;border-radius:4px;display:none;font-size:13px}
+
+/* ── 팝업 라이트박스 ── */
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;justify-content:center;align-items:center;flex-direction:column;gap:10px}
+#lightbox.open{display:flex}
+#lightbox img{max-width:90vw;max-height:82vh;border-radius:8px;box-shadow:0 0 40px #000;object-fit:contain}
+#lightbox-name{color:#eee;font-size:1em;text-align:center;max-width:90vw;cursor:pointer;padding:4px 12px;background:rgba(255,255,255,.08);border-radius:4px}
+#lightbox-name:hover{color:#4f4}
+#lightbox-close{position:fixed;top:18px;right:24px;font-size:2em;color:#aaa;cursor:pointer;line-height:1}
+#lightbox-close:hover{color:#fff}
+#lightbox-prev,#lightbox-next{position:fixed;top:50%;transform:translateY(-50%);font-size:2.5em;color:#aaa;cursor:pointer;user-select:none;padding:0 16px}
+#lightbox-prev{left:4px}#lightbox-next{right:4px}
+#lightbox-prev:hover,#lightbox-next:hover{color:#fff}
+</style>
+</head>
+<body>
+<header class="site-header"><a class="site-title" href="index.html">SDXL Artist Study</a><nav class="site-nav"><a href="index.html" class="">🎨 Artists</a><a href="film.html" class="">🎞 Film</a><a href="cameras.html" class="">📷 Cameras</a><a href="art-movements.html" class="">🖼 Movements</a><a href="art-mediums.html" class="active">✏️ Mediums</a><a href="tags.html" class="">🏷 Tags</a></nav></header>
+<div class="page-content">
+
+<div class="intro-text">Various art mediums. Prompted with <em>'{medium} art of a woman'</em></div>
+<div class="search-container">
+  <input type="text" id="search-bar" placeholder="Search for a medium..." oninput="searchArtist()">
+  <span id="clear-icon" onclick="clearSearch()">×</span>
+  <div id="search-results"></div>
+</div>
+<div class="grid"><div id="pen and ink"><p onclick="copyToClipboard(this)">pen and ink</p><img src="assets/images/sdxl1.0/styles/pen and ink.jpg" alt="pen and ink" loading="lazy" onerror="this.style.display='none'"></div><div id="plaster"><p onclick="copyToClipboard(this)">plaster</p><img src="assets/images/sdxl1.0/styles/plaster.jpg" alt="plaster" loading="lazy" onerror="this.style.display='none'"></div><div id="watercolor"><p onclick="copyToClipboard(this)">watercolor</p><img src="assets/images/sdxl1.0/styles/watercolor.jpg" alt="watercolor" loading="lazy" onerror="this.style.display='none'"></div><div id="oil paint"><p onclick="copyToClipboard(this)">oil paint</p><img src="assets/images/sdxl1.0/styles/oil paint.jpg" alt="oil paint" loading="lazy" onerror="this.style.display='none'"></div><div id="acrylic paint"><p onclick="copyToClipboard(this)">acrylic paint</p><img src="assets/images/sdxl1.0/styles/acrylic paint.jpg" alt="acrylic paint" loading="lazy" onerror="this.style.display='none'"></div><div id="charcoal"><p onclick="copyToClipboard(this)">charcoal</p><img src="assets/images/sdxl1.0/styles/charcoal.jpg" alt="charcoal" loading="lazy" onerror="this.style.display='none'"></div><div id="pastel"><p onclick="copyToClipboard(this)">pastel</p><img src="assets/images/sdxl1.0/styles/pastel.jpg" alt="pastel" loading="lazy" onerror="this.style.display='none'"></div><div id="gouache"><p onclick="copyToClipboard(this)">gouache</p><img src="assets/images/sdxl1.0/styles/gouache.jpg" alt="gouache" loading="lazy" onerror="this.style.display='none'"></div><div id="tempera"><p onclick="copyToClipboard(this)">tempera</p><img src="assets/images/sdxl1.0/styles/tempera.jpg" alt="tempera" loading="lazy" onerror="this.style.display='none'"></div><div id="graphite pencil"><p onclick="copyToClipboard(this)">graphite pencil</p><img src="assets/images/sdxl1.0/styles/graphite pencil.jpg" alt="graphite pencil" loading="lazy" onerror="this.style.display='none'"></div><div id="colored pencil"><p onclick="copyToClipboard(this)">colored pencil</p><img src="assets/images/sdxl1.0/styles/colored pencil.jpg" alt="colored pencil" loading="lazy" onerror="this.style.display='none'"></div><div id="digital painting"><p onclick="copyToClipboard(this)">digital painting</p><img src="assets/images/sdxl1.0/styles/digital painting.jpg" alt="digital painting" loading="lazy" onerror="this.style.display='none'"></div><div id="spray paint"><p onclick="copyToClipboard(this)">spray paint</p><img src="assets/images/sdxl1.0/styles/spray paint.jpg" alt="spray paint" loading="lazy" onerror="this.style.display='none'"></div><div id="clay"><p onclick="copyToClipboard(this)">clay</p><img src="assets/images/sdxl1.0/styles/clay.jpg" alt="clay" loading="lazy" onerror="this.style.display='none'"></div><div id="bronze"><p onclick="copyToClipboard(this)">bronze</p><img src="assets/images/sdxl1.0/styles/bronze.jpg" alt="bronze" loading="lazy" onerror="this.style.display='none'"></div><div id="marble"><p onclick="copyToClipboard(this)">marble</p><img src="assets/images/sdxl1.0/styles/marble.jpg" alt="marble" loading="lazy" onerror="this.style.display='none'"></div><div id="glass"><p onclick="copyToClipboard(this)">glass</p><img src="assets/images/sdxl1.0/styles/glass.jpg" alt="glass" loading="lazy" onerror="this.style.display='none'"></div><div id="fabric"><p onclick="copyToClipboard(this)">fabric</p><img src="assets/images/sdxl1.0/styles/fabric.jpg" alt="fabric" loading="lazy" onerror="this.style.display='none'"></div><div id="collage"><p onclick="copyToClipboard(this)">collage</p><img src="assets/images/sdxl1.0/styles/collage.jpg" alt="collage" loading="lazy" onerror="this.style.display='none'"></div><div id="printmaking"><p onclick="copyToClipboard(this)">printmaking</p><img src="assets/images/sdxl1.0/styles/printmaking.jpg" alt="printmaking" loading="lazy" onerror="this.style.display='none'"></div><div id="etching"><p onclick="copyToClipboard(this)">etching</p><img src="assets/images/sdxl1.0/styles/etching.jpg" alt="etching" loading="lazy" onerror="this.style.display='none'"></div><div id="lithography"><p onclick="copyToClipboard(this)">lithography</p><img src="assets/images/sdxl1.0/styles/lithography.jpg" alt="lithography" loading="lazy" onerror="this.style.display='none'"></div><div id="woodcut"><p onclick="copyToClipboard(this)">woodcut</p><img src="assets/images/sdxl1.0/styles/woodcut.jpg" alt="woodcut" loading="lazy" onerror="this.style.display='none'"></div><div id="mosaic"><p onclick="copyToClipboard(this)">mosaic</p><img src="assets/images/sdxl1.0/styles/mosaic.jpg" alt="mosaic" loading="lazy" onerror="this.style.display='none'"></div><div id="mixed media"><p onclick="copyToClipboard(this)">mixed media</p><img src="assets/images/sdxl1.0/styles/mixed media.jpg" alt="mixed media" loading="lazy" onerror="this.style.display='none'"></div><div id="photography"><p onclick="copyToClipboard(this)">photography</p><img src="assets/images/sdxl1.0/styles/photography.jpg" alt="photography" loading="lazy" onerror="this.style.display='none'"></div><div id="video art"><p onclick="copyToClipboard(this)">video art</p><img src="assets/images/sdxl1.0/styles/video art.jpg" alt="video art" loading="lazy" onerror="this.style.display='none'"></div><div id="installation art"><p onclick="copyToClipboard(this)">installation art</p><img src="assets/images/sdxl1.0/styles/installation art.jpg" alt="installation art" loading="lazy" onerror="this.style.display='none'"></div><div id="ceramics"><p onclick="copyToClipboard(this)">ceramics</p><img src="assets/images/sdxl1.0/styles/ceramics.jpg" alt="ceramics" loading="lazy" onerror="this.style.display='none'"></div><div id="metal"><p onclick="copyToClipboard(this)">metal</p><img src="assets/images/sdxl1.0/styles/metal.jpg" alt="metal" loading="lazy" onerror="this.style.display='none'"></div><div id="wax"><p onclick="copyToClipboard(this)">wax</p><img src="assets/images/sdxl1.0/styles/wax.jpg" alt="wax" loading="lazy" onerror="this.style.display='none'"></div><div id="resin"><p onclick="copyToClipboard(this)">resin</p><img src="assets/images/sdxl1.0/styles/resin.jpg" alt="resin" loading="lazy" onerror="this.style.display='none'"></div><div id="stone"><p onclick="copyToClipboard(this)">stone</p><img src="assets/images/sdxl1.0/styles/stone.jpg" alt="stone" loading="lazy" onerror="this.style.display='none'"></div><div id="wood"><p onclick="copyToClipboard(this)">wood</p><img src="assets/images/sdxl1.0/styles/wood.jpg" alt="wood" loading="lazy" onerror="this.style.display='none'"></div><div id="leather"><p onclick="copyToClipboard(this)">leather</p><img src="assets/images/sdxl1.0/styles/leather.jpg" alt="leather" loading="lazy" onerror="this.style.display='none'"></div><div id="fiber"><p onclick="copyToClipboard(this)">fiber</p><img src="assets/images/sdxl1.0/styles/fiber.jpg" alt="fiber" loading="lazy" onerror="this.style.display='none'"></div><div id="neon"><p onclick="copyToClipboard(this)">neon</p><img src="assets/images/sdxl1.0/styles/neon.jpg" alt="neon" loading="lazy" onerror="this.style.display='none'"></div><div id="sand"><p onclick="copyToClipboard(this)">sand</p><img src="assets/images/sdxl1.0/styles/sand.jpg" alt="sand" loading="lazy" onerror="this.style.display='none'"></div><div id="ice"><p onclick="copyToClipboard(this)">ice</p><img src="assets/images/sdxl1.0/styles/ice.jpg" alt="ice" loading="lazy" onerror="this.style.display='none'"></div><div id="found objects"><p onclick="copyToClipboard(this)">found objects</p><img src="assets/images/sdxl1.0/styles/found objects.jpg" alt="found objects" loading="lazy" onerror="this.style.display='none'"></div><div id="performance art"><p onclick="copyToClipboard(this)">performance art</p><img src="assets/images/sdxl1.0/styles/performance art.jpg" alt="performance art" loading="lazy" onerror="this.style.display='none'"></div><div id="sound art"><p onclick="copyToClipboard(this)">sound art</p><img src="assets/images/sdxl1.0/styles/sound art.jpg" alt="sound art" loading="lazy" onerror="this.style.display='none'"></div><div id="papermaking"><p onclick="copyToClipboard(this)">papermaking</p><img src="assets/images/sdxl1.0/styles/papermaking.jpg" alt="papermaking" loading="lazy" onerror="this.style.display='none'"></div><div id="calligraphy"><p onclick="copyToClipboard(this)">calligraphy</p><img src="assets/images/sdxl1.0/styles/calligraphy.jpg" alt="calligraphy" loading="lazy" onerror="this.style.display='none'"></div><div id="tapestry"><p onclick="copyToClipboard(this)">tapestry</p><img src="assets/images/sdxl1.0/styles/tapestry.jpg" alt="tapestry" loading="lazy" onerror="this.style.display='none'"></div><div id="encaustic painting"><p onclick="copyToClipboard(this)">encaustic painting</p><img src="assets/images/sdxl1.0/styles/encaustic painting.jpg" alt="encaustic painting" loading="lazy" onerror="this.style.display='none'"></div><div id="batik"><p onclick="copyToClipboard(this)">batik</p><img src="assets/images/sdxl1.0/styles/batik.jpg" alt="batik" loading="lazy" onerror="this.style.display='none'"></div><div id="stained glass"><p onclick="copyToClipboard(this)">stained glass</p><img src="assets/images/sdxl1.0/styles/stained glass.jpg" alt="stained glass" loading="lazy" onerror="this.style.display='none'"></div><div id="beadwork"><p onclick="copyToClipboard(this)">beadwork</p><img src="assets/images/sdxl1.0/styles/beadwork.jpg" alt="beadwork" loading="lazy" onerror="this.style.display='none'"></div><div id="sequin art"><p onclick="copyToClipboard(this)">sequin art</p><img src="assets/images/sdxl1.0/styles/sequin art.jpg" alt="sequin art" loading="lazy" onerror="this.style.display='none'"></div><div id="digital sculpture"><p onclick="copyToClipboard(this)">digital sculpture</p><img src="assets/images/sdxl1.0/styles/digital sculpture.jpg" alt="digital sculpture" loading="lazy" onerror="this.style.display='none'"></div><div id="virtual reality art"><p onclick="copyToClipboard(this)">virtual reality art</p><img src="assets/images/sdxl1.0/styles/virtual reality art.jpg" alt="virtual reality art" loading="lazy" onerror="this.style.display='none'"></div><div id="3D printing"><p onclick="copyToClipboard(this)">3D printing</p><img src="assets/images/sdxl1.0/styles/3D printing.jpg" alt="3D printing" loading="lazy" onerror="this.style.display='none'"></div><div id="textile art"><p onclick="copyToClipboard(this)">textile art</p><img src="assets/images/sdxl1.0/styles/textile art.jpg" alt="textile art" loading="lazy" onerror="this.style.display='none'"></div><div id="conceptual art"><p onclick="copyToClipboard(this)">conceptual art</p><img src="assets/images/sdxl1.0/styles/conceptual art.jpg" alt="conceptual art" loading="lazy" onerror="this.style.display='none'"></div><div id="environmental art"><p onclick="copyToClipboard(this)">environmental art</p><img src="assets/images/sdxl1.0/styles/environmental art.jpg" alt="environmental art" loading="lazy" onerror="this.style.display='none'"></div><div id="fresco"><p onclick="copyToClipboard(this)">fresco</p><img src="assets/images/sdxl1.0/styles/fresco.jpg" alt="fresco" loading="lazy" onerror="this.style.display='none'"></div><div id="scrimshaw"><p onclick="copyToClipboard(this)">scrimshaw</p><img src="assets/images/sdxl1.0/styles/scrimshaw.jpg" alt="scrimshaw" loading="lazy" onerror="this.style.display='none'"></div><div id="quilling"><p onclick="copyToClipboard(this)">quilling</p><img src="assets/images/sdxl1.0/styles/quilling.jpg" alt="quilling" loading="lazy" onerror="this.style.display='none'"></div><div id="origami"><p onclick="copyToClipboard(this)">origami</p><img src="assets/images/sdxl1.0/styles/origami.jpg" alt="origami" loading="lazy" onerror="this.style.display='none'"></div><div id="papier-mâché"><p onclick="copyToClipboard(this)">papier-mâché</p><img src="assets/images/sdxl1.0/styles/papier-mâché.jpg" alt="papier-mâché" loading="lazy" onerror="this.style.display='none'"></div><div id="pyrography"><p onclick="copyToClipboard(this)">pyrography</p><img src="assets/images/sdxl1.0/styles/pyrography.jpg" alt="pyrography" loading="lazy" onerror="this.style.display='none'"></div><div id="copper etching"><p onclick="copyToClipboard(this)">copper etching</p><img src="assets/images/sdxl1.0/styles/copper etching.jpg" alt="copper etching" loading="lazy" onerror="this.style.display='none'"></div><div id="embroidery"><p onclick="copyToClipboard(this)">embroidery</p><img src="assets/images/sdxl1.0/styles/embroidery.jpg" alt="embroidery" loading="lazy" onerror="this.style.display='none'"></div><div id="ink wash painting"><p onclick="copyToClipboard(this)">ink wash painting</p><img src="assets/images/sdxl1.0/styles/ink wash painting.jpg" alt="ink wash painting" loading="lazy" onerror="this.style.display='none'"></div><div id="assemblage"><p onclick="copyToClipboard(this)">assemblage</p><img src="assets/images/sdxl1.0/styles/assemblage.jpg" alt="assemblage" loading="lazy" onerror="this.style.display='none'"></div><div id="enamel"><p onclick="copyToClipboard(this)">enamel</p><img src="assets/images/sdxl1.0/styles/enamel.jpg" alt="enamel" loading="lazy" onerror="this.style.display='none'"></div><div id="gold leaf"><p onclick="copyToClipboard(this)">gold leaf</p><img src="assets/images/sdxl1.0/styles/gold leaf.jpg" alt="gold leaf" loading="lazy" onerror="this.style.display='none'"></div><div id="silverpoint"><p onclick="copyToClipboard(this)">silverpoint</p><img src="assets/images/sdxl1.0/styles/silverpoint.jpg" alt="silverpoint" loading="lazy" onerror="this.style.display='none'"></div><div id="terra-cotta"><p onclick="copyToClipboard(this)">terra-cotta</p><img src="assets/images/sdxl1.0/styles/terra-cotta.jpg" alt="terra-cotta" loading="lazy" onerror="this.style.display='none'"></div><div id="polymer clay"><p onclick="copyToClipboard(this)">polymer clay</p><img src="assets/images/sdxl1.0/styles/polymer clay.jpg" alt="polymer clay" loading="lazy" onerror="this.style.display='none'"></div><div id="decoupage"><p onclick="copyToClipboard(this)">decoupage</p><img src="assets/images/sdxl1.0/styles/decoupage.jpg" alt="decoupage" loading="lazy" onerror="this.style.display='none'"></div><div id="tattoo art"><p onclick="copyToClipboard(this)">tattoo art</p><img src="assets/images/sdxl1.0/styles/tattoo art.jpg" alt="tattoo art" loading="lazy" onerror="this.style.display='none'"></div><div id="chalk"><p onclick="copyToClipboard(this)">chalk</p><img src="assets/images/sdxl1.0/styles/chalk.jpg" alt="chalk" loading="lazy" onerror="this.style.display='none'"></div><div id="airbrush"><p onclick="copyToClipboard(this)">airbrush</p><img src="assets/images/sdxl1.0/styles/airbrush.jpg" alt="airbrush" loading="lazy" onerror="this.style.display='none'"></div><div id="miniature painting"><p onclick="copyToClipboard(this)">miniature painting</p><img src="assets/images/sdxl1.0/styles/miniature painting.jpg" alt="miniature painting" loading="lazy" onerror="this.style.display='none'"></div><div id="monotype printing"><p onclick="copyToClipboard(this)">monotype printing</p><img src="assets/images/sdxl1.0/styles/monotype printing.jpg" alt="monotype printing" loading="lazy" onerror="this.style.display='none'"></div><div id="relief printing"><p onclick="copyToClipboard(this)">relief printing</p><img src="assets/images/sdxl1.0/styles/relief printing.jpg" alt="relief printing" loading="lazy" onerror="this.style.display='none'"></div><div id="intaglio printing"><p onclick="copyToClipboard(this)">intaglio printing</p><img src="assets/images/sdxl1.0/styles/intaglio printing.jpg" alt="intaglio printing" loading="lazy" onerror="this.style.display='none'"></div><div id="silk painting"><p onclick="copyToClipboard(this)">silk painting</p><img src="assets/images/sdxl1.0/styles/silk painting.jpg" alt="silk painting" loading="lazy" onerror="this.style.display='none'"></div><div id="felting"><p onclick="copyToClipboard(this)">felting</p><img src="assets/images/sdxl1.0/styles/felting.jpg" alt="felting" loading="lazy" onerror="this.style.display='none'"></div><div id="crochet"><p onclick="copyToClipboard(this)">crochet</p><img src="assets/images/sdxl1.0/styles/crochet.jpg" alt="crochet" loading="lazy" onerror="this.style.display='none'"></div><div id="knitting"><p onclick="copyToClipboard(this)">knitting</p><img src="assets/images/sdxl1.0/styles/knitting.jpg" alt="knitting" loading="lazy" onerror="this.style.display='none'"></div><div id="weaving"><p onclick="copyToClipboard(this)">weaving</p><img src="assets/images/sdxl1.0/styles/weaving.jpg" alt="weaving" loading="lazy" onerror="this.style.display='none'"></div><div id="sculpture welding"><p onclick="copyToClipboard(this)">sculpture welding</p><img src="assets/images/sdxl1.0/styles/sculpture welding.jpg" alt="sculpture welding" loading="lazy" onerror="this.style.display='none'"></div><div id="screen printing"><p onclick="copyToClipboard(this)">screen printing</p><img src="assets/images/sdxl1.0/styles/screen printing.jpg" alt="screen printing" loading="lazy" onerror="this.style.display='none'"></div><div id="lenticular printing"><p onclick="copyToClipboard(this)">lenticular printing</p><img src="assets/images/sdxl1.0/styles/lenticular printing.jpg" alt="lenticular printing" loading="lazy" onerror="this.style.display='none'"></div><div id="diorama"><p onclick="copyToClipboard(this)">diorama</p><img src="assets/images/sdxl1.0/styles/diorama.jpg" alt="diorama" loading="lazy" onerror="this.style.display='none'"></div><div id="collagraphy"><p onclick="copyToClipboard(this)">collagraphy</p><img src="assets/images/sdxl1.0/styles/collagraphy.jpg" alt="collagraphy" loading="lazy" onerror="this.style.display='none'"></div><div id="scratchboard art"><p onclick="copyToClipboard(this)">scratchboard art</p><img src="assets/images/sdxl1.0/styles/scratchboard art.jpg" alt="scratchboard art" loading="lazy" onerror="this.style.display='none'"></div><div id="body painting"><p onclick="copyToClipboard(this)">body painting</p><img src="assets/images/sdxl1.0/styles/body painting.jpg" alt="body painting" loading="lazy" onerror="this.style.display='none'"></div><div id="graffiti"><p onclick="copyToClipboard(this)">graffiti</p><img src="assets/images/sdxl1.0/styles/graffiti.jpg" alt="graffiti" loading="lazy" onerror="this.style.display='none'"></div><div id="macrame"><p onclick="copyToClipboard(this)">macrame</p><img src="assets/images/sdxl1.0/styles/macrame.jpg" alt="macrame" loading="lazy" onerror="this.style.display='none'"></div><div id="art glass"><p onclick="copyToClipboard(this)">art glass</p><img src="assets/images/sdxl1.0/styles/art glass.jpg" alt="art glass" loading="lazy" onerror="this.style.display='none'"></div><div id="stencil"><p onclick="copyToClipboard(this)">stencil</p><img src="assets/images/sdxl1.0/styles/stencil.jpg" alt="stencil" loading="lazy" onerror="this.style.display='none'"></div><div id="digital mosaic"><p onclick="copyToClipboard(this)">digital mosaic</p><img src="assets/images/sdxl1.0/styles/digital mosaic.jpg" alt="digital mosaic" loading="lazy" onerror="this.style.display='none'"></div><div id="interactive media"><p onclick="copyToClipboard(this)">interactive media</p><img src="assets/images/sdxl1.0/styles/interactive media.jpg" alt="interactive media" loading="lazy" onerror="this.style.display='none'"></div><div id="light projection"><p onclick="copyToClipboard(this)">light projection</p><img src="assets/images/sdxl1.0/styles/light projection.jpg" alt="light projection" loading="lazy" onerror="this.style.display='none'"></div><div id="animation"><p onclick="copyToClipboard(this)">animation</p><img src="assets/images/sdxl1.0/styles/animation.jpg" alt="animation" loading="lazy" onerror="this.style.display='none'"></div><div id="kinetic art"><p onclick="copyToClipboard(this)">kinetic art</p><img src="assets/images/sdxl1.0/styles/kinetic art.jpg" alt="kinetic art" loading="lazy" onerror="this.style.display='none'"></div><div id="foam carving"><p onclick="copyToClipboard(this)">foam carving</p><img src="assets/images/sdxl1.0/styles/foam carving.jpg" alt="foam carving" loading="lazy" onerror="this.style.display='none'"></div><div id="photomontage"><p onclick="copyToClipboard(this)">photomontage</p><img src="assets/images/sdxl1.0/styles/photomontage.jpg" alt="photomontage" loading="lazy" onerror="this.style.display='none'"></div><div id="cast paper"><p onclick="copyToClipboard(this)">cast paper</p><img src="assets/images/sdxl1.0/styles/cast paper.jpg" alt="cast paper" loading="lazy" onerror="this.style.display='none'"></div><div id="wire sculpture"><p onclick="copyToClipboard(this)">wire sculpture</p><img src="assets/images/sdxl1.0/styles/wire sculpture.jpg" alt="wire sculpture" loading="lazy" onerror="this.style.display='none'"></div><div id="computer-generated imagery (CGI)"><p onclick="copyToClipboard(this)">computer-generated imagery (CGI)</p><img src="assets/images/sdxl1.0/styles/computer-generated imagery (CGI).jpg" alt="computer-generated imagery (CGI)" loading="lazy" onerror="this.style.display='none'"></div><div id="augmented reality art"><p onclick="copyToClipboard(this)">augmented reality art</p><img src="assets/images/sdxl1.0/styles/augmented reality art.jpg" alt="augmented reality art" loading="lazy" onerror="this.style.display='none'"></div><div id="land art"><p onclick="copyToClipboard(this)">land art</p><img src="assets/images/sdxl1.0/styles/land art.jpg" alt="land art" loading="lazy" onerror="this.style.display='none'"></div><div id="quilt art"><p onclick="copyToClipboard(this)">quilt art</p><img src="assets/images/sdxl1.0/styles/quilt art.jpg" alt="quilt art" loading="lazy" onerror="this.style.display='none'"></div><div id="metalpoint"><p onclick="copyToClipboard(this)">metalpoint</p><img src="assets/images/sdxl1.0/styles/metalpoint.jpg" alt="metalpoint" loading="lazy" onerror="this.style.display='none'"></div><div id="puppetry"><p onclick="copyToClipboard(this)">puppetry</p><img src="assets/images/sdxl1.0/styles/puppetry.jpg" alt="puppetry" loading="lazy" onerror="this.style.display='none'"></div><div id="blacksmithing"><p onclick="copyToClipboard(this)">blacksmithing</p><img src="assets/images/sdxl1.0/styles/blacksmithing.jpg" alt="blacksmithing" loading="lazy" onerror="this.style.display='none'"></div><div id="bookbinding"><p onclick="copyToClipboard(this)">bookbinding</p><img src="assets/images/sdxl1.0/styles/bookbinding.jpg" alt="bookbinding" loading="lazy" onerror="this.style.display='none'"></div><div id="plastic arts"><p onclick="copyToClipboard(this)">plastic arts</p><img src="assets/images/sdxl1.0/styles/plastic arts.jpg" alt="plastic arts" loading="lazy" onerror="this.style.display='none'"></div><div id="recycled art"><p onclick="copyToClipboard(this)">recycled art</p><img src="assets/images/sdxl1.0/styles/recycled art.jpg" alt="recycled art" loading="lazy" onerror="this.style.display='none'"></div><div id="glitch art"><p onclick="copyToClipboard(this)">glitch art</p><img src="assets/images/sdxl1.0/styles/glitch art.jpg" alt="glitch art" loading="lazy" onerror="this.style.display='none'"></div><div id="algorithmic art"><p onclick="copyToClipboard(this)">algorithmic art</p><img src="assets/images/sdxl1.0/styles/algorithmic art.jpg" alt="algorithmic art" loading="lazy" onerror="this.style.display='none'"></div><div id="mosaic tile art"><p onclick="copyToClipboard(this)">mosaic tile art</p><img src="assets/images/sdxl1.0/styles/mosaic tile art.jpg" alt="mosaic tile art" loading="lazy" onerror="this.style.display='none'"></div><div id="reverse glass painting"><p onclick="copyToClipboard(this)">reverse glass painting</p><img src="assets/images/sdxl1.0/styles/reverse glass painting.jpg" alt="reverse glass painting" loading="lazy" onerror="this.style.display='none'"></div></div>
+</div>
+
+<div id="lightbox">
+  <span id="lightbox-close" onclick="closeLightbox()">✕</span>
+  <span id="lightbox-prev" onclick="lbPrev()">&#8249;</span>
+  <img id="lightbox-img" src="" alt="">
+  <span id="lightbox-name"></span>
+  <span id="lightbox-next" onclick="lbNext()">&#8250;</span>
+</div>
+
+<button id="back-to-top" onclick="scrollToTop()">↑</button><div class="copied-toast" id="copied-toast">Copied!</div>
+<script>
+
+function searchArtist(){
+    const q=document.getElementById('search-bar').value.toLowerCase();
+    const res=document.getElementById('search-results');
+    if(!q){res.innerHTML='';return;}
+    const matches=["pen and ink", "plaster", "watercolor", "oil paint", "acrylic paint", "charcoal", "pastel", "gouache", "tempera", "graphite pencil", "colored pencil", "digital painting", "spray paint", "clay", "bronze", "marble", "glass", "fabric", "collage", "printmaking", "etching", "lithography", "woodcut", "mosaic", "mixed media", "photography", "video art", "installation art", "ceramics", "metal", "wax", "resin", "stone", "wood", "leather", "fiber", "neon", "sand", "ice", "found objects", "performance art", "sound art", "papermaking", "calligraphy", "tapestry", "encaustic painting", "batik", "stained glass", "beadwork", "sequin art", "digital sculpture", "virtual reality art", "3D printing", "textile art", "conceptual art", "environmental art", "fresco", "scrimshaw", "quilling", "origami", "papier-mâché", "pyrography", "copper etching", "embroidery", "ink wash painting", "assemblage", "enamel", "gold leaf", "silverpoint", "terra-cotta", "polymer clay", "decoupage", "tattoo art", "chalk", "airbrush", "miniature painting", "monotype printing", "relief printing", "intaglio printing", "silk painting", "felting", "crochet", "knitting", "weaving", "sculpture welding", "screen printing", "lenticular printing", "diorama", "collagraphy", "scratchboard art", "body painting", "graffiti", "macrame", "art glass", "stencil", "digital mosaic", "interactive media", "light projection", "animation", "kinetic art", "foam carving", "photomontage", "cast paper", "wire sculpture", "computer-generated imagery (CGI)", "augmented reality art", "land art", "quilt art", "metalpoint", "puppetry", "blacksmithing", "bookbinding", "plastic arts", "recycled art", "glitch art", "algorithmic art", "mosaic tile art", "reverse glass painting"].filter(a=>a.toLowerCase().includes(q)).slice(0,20);
+    res.innerHTML=matches.map(a=>'<div onclick="scrollToArtist(\''+a.replace(/'/g,"\\'")+'\'">'+a+'</div>').join('');
+}
+function clearSearch(){
+    document.getElementById('search-bar').value='';
+    document.getElementById('search-results').innerHTML='';
+}
+function scrollToArtist(name){
+    const el=document.getElementById(name);
+    if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.style.outline='2px solid #aef';setTimeout(()=>el.style.outline='',2000);}
+    document.getElementById('search-results').innerHTML='';
+}
+
+document.addEventListener('DOMContentLoaded',()=>bindImgClick());
+
+// ── 라이트박스 ──
+const lb      = document.getElementById('lightbox');
+const lbImg   = document.getElementById('lightbox-img');
+const lbName  = document.getElementById('lightbox-name');
+let lbItems=[], lbIdx=0;
+
+function buildLbItems(){
+    lbItems = Array.from(document.querySelectorAll('.grid img, .image img'))
+                   .filter(img=>img.style.display!=='none' && img.complete && img.naturalWidth>0);
+}
+
+function openLightbox(img){
+    buildLbItems();
+    lbIdx = lbItems.indexOf(img);
+    if(lbIdx===-1){lbItems.unshift(img);lbIdx=0;}
+    showLb(lbIdx);
+}
+
+function showLb(idx){
+    const img = lbItems[idx];
+    if(!img) return;
+    lbImg.src   = img.src;
+    lbImg.alt   = img.alt;
+    lbName.textContent = img.alt;
+    lb.classList.add('open');
+    document.body.style.overflow='hidden';
+}
+
+function closeLightbox(){
+    lb.classList.remove('open');
+    lbImg.src='';
+    document.body.style.overflow='';
+}
+
+function lbPrev(){lbIdx=(lbIdx-1+lbItems.length)%lbItems.length;showLb(lbIdx);}
+function lbNext(){lbIdx=(lbIdx+1)%lbItems.length;showLb(lbIdx);}
+
+lb.addEventListener('click',e=>{if(e.target===lb)closeLightbox();});
+document.addEventListener('keydown',e=>{
+    if(!lb.classList.contains('open'))return;
+    if(e.key==='Escape')closeLightbox();
+    if(e.key==='ArrowLeft')lbPrev();
+    if(e.key==='ArrowRight')lbNext();
+});
+lbName.addEventListener('click',()=>{
+    navigator.clipboard.writeText(lbName.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+});
+
+// 이미지에 클릭 이벤트 등록 (동적 생성 포함)
+function bindImgClick(root){
+    (root||document).querySelectorAll('.grid img,.image img').forEach(img=>{
+        if(!img.dataset.lbBound){
+            img.dataset.lbBound='1';
+            img.addEventListener('click',()=>openLightbox(img));
+        }
+    });
+}
+
+
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+function copyToClipboard(el){
+    navigator.clipboard.writeText(el.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+}
+window.addEventListener('scroll',()=>{
+    document.getElementById('back-to-top').style.display=window.scrollY>400?'block':'none';
+});
+document.addEventListener('click',e=>{
+    if(!e.target.closest('.search-container'))
+        document.getElementById('search-results').innerHTML='';
+});
+
+</script>
+</body>
+</html>

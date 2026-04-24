@@ -1,60 +1,180 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>X - SDXL Artist Study</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:sans-serif;margin:0;padding:0;background:#111;color:#eee}
+.site-header{background:#1a1a2e;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid #333}
+.site-title{color:#aef;font-size:1.2em;font-weight:bold;text-decoration:none}
+.site-nav{display:flex;flex-wrap:wrap;gap:6px}
+.site-nav a{color:#ccc;text-decoration:none;padding:4px 10px;border:1px solid #444;border-radius:4px;font-size:13px}
+.site-nav a:hover,.site-nav a.active{background:#335;color:#aef;border-color:#aef}
+.page-content{padding:14px 16px}
+.intro-text{padding:6px 0 16px;line-height:1.6;color:#bbb}
+.search-container{position:relative;margin-bottom:14px}
+#search-bar{width:100%;max-width:420px;padding:8px 36px 8px 10px;font-size:15px;background:#222;color:#eee;border:1px solid #444;border-radius:4px}
+#clear-icon{position:absolute;left:396px;top:7px;cursor:pointer;font-size:22px;color:#aaa}
+#search-results{background:#222;border:1px solid #444;max-width:420px;position:absolute;z-index:100;width:100%;border-radius:0 0 4px 4px}
+#search-results div{padding:6px 10px;cursor:pointer}
+#search-results div:hover{background:#333}
+.alphabet-nav{margin-bottom:14px;display:flex;flex-wrap:wrap;gap:4px}
+.alphabet-nav a{color:#aef;text-decoration:none;padding:3px 7px;border:1px solid #444;border-radius:4px;font-size:13px}
+.alphabet-nav a:hover,.alphabet-nav a.active{background:#335;border-color:#aef}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.grid>div,.image{background:#1a1a1a;border-radius:6px;overflow:hidden;text-align:center}
+.grid>div p,.image p{padding:6px;margin:0;font-size:12px;cursor:pointer;word-break:break-word}
+.grid>div p:hover,.image p:hover{color:#aef}
+.grid>div img,.image img{width:100%;display:block;cursor:zoom-in;transition:opacity .15s}
+.grid>div img:hover,.image img:hover{opacity:.85}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.tag{background:#222;color:#ccc;border:1px solid #444;padding:5px 12px;border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s}
+.tag:hover,.tag.active{background:#335;color:#aef;border-color:#aef}
+.tag-all{background:#335;color:#aef;border-color:#aef}
+#result-count{color:#888;font-size:13px;margin-bottom:10px}
+h2{margin:0 0 12px;font-size:2em;color:#aef}
+#back-to-top{position:fixed;bottom:28px;right:28px;padding:10px 14px;background:#333;color:#eee;border:none;border-radius:50%;cursor:pointer;font-size:20px;display:none}
+#back-to-top:hover{background:#555}
+.copied-toast{position:fixed;bottom:76px;right:28px;background:#4f4;color:#000;padding:6px 14px;border-radius:4px;display:none;font-size:13px}
+
+/* ── 팝업 라이트박스 ── */
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;justify-content:center;align-items:center;flex-direction:column;gap:10px}
+#lightbox.open{display:flex}
+#lightbox img{max-width:90vw;max-height:82vh;border-radius:8px;box-shadow:0 0 40px #000;object-fit:contain}
+#lightbox-name{color:#eee;font-size:1em;text-align:center;max-width:90vw;cursor:pointer;padding:4px 12px;background:rgba(255,255,255,.08);border-radius:4px}
+#lightbox-name:hover{color:#4f4}
+#lightbox-close{position:fixed;top:18px;right:24px;font-size:2em;color:#aaa;cursor:pointer;line-height:1}
+#lightbox-close:hover{color:#fff}
+#lightbox-prev,#lightbox-next{position:fixed;top:50%;transform:translateY(-50%);font-size:2.5em;color:#aaa;cursor:pointer;user-select:none;padding:0 16px}
+#lightbox-prev{left:4px}#lightbox-next{right:4px}
+#lightbox-prev:hover,#lightbox-next:hover{color:#fff}
+</style>
+</head>
+<body>
+<header class="site-header"><a class="site-title" href="../index.html">SDXL Artist Study</a><nav class="site-nav"><a href="../index.html" class="active">🎨 Artists</a><a href="../film.html" class="">🎞 Film</a><a href="../cameras.html" class="">📷 Cameras</a><a href="../art-movements.html" class="">🖼 Movements</a><a href="../art-mediums.html" class="">✏️ Mediums</a><a href="../tags.html" class="">🏷 Tags</a></nav></header>
+<div class="page-content">
+
 <div class="search-container">
-    <input type="text" id="search-bar" placeholder="Search for an artist..." onkeyup="searchArtist()">
-    <span id="clear-icon" onclick="clearSearch()">×</span>
-    <div id="search-results"></div>
+  <input type="text" id="search-bar" placeholder="Search for an artist..." oninput="searchArtist()">
+  <span id="clear-icon" onclick="clearSearch()">×</span>
+  <div id="search-results"></div>
+</div>
+<div class="alphabet-nav"><a href="../index.html">All</a><a href="../pages/A.html" class="">A</a><a href="../pages/B.html" class="">B</a><a href="../pages/C.html" class="">C</a><a href="../pages/D.html" class="">D</a><a href="../pages/E.html" class="">E</a><a href="../pages/F.html" class="">F</a><a href="../pages/G.html" class="">G</a><a href="../pages/H.html" class="">H</a><a href="../pages/I.html" class="">I</a><a href="../pages/J.html" class="">J</a><a href="../pages/K.html" class="">K</a><a href="../pages/L.html" class="">L</a><a href="../pages/M.html" class="">M</a><a href="../pages/N.html" class="">N</a><a href="../pages/O.html" class="">O</a><a href="../pages/P.html" class="">P</a><a href="../pages/Q.html" class="">Q</a><a href="../pages/R.html" class="">R</a><a href="../pages/S.html" class="">S</a><a href="../pages/T.html" class="">T</a><a href="../pages/U.html" class="">U</a><a href="../pages/V.html" class="">V</a><a href="../pages/W.html" class="">W</a><a href="../pages/X.html" class="active">X</a><a href="../pages/Y.html" class="">Y</a><a href="../pages/Z.html" class="">Z</a></div>
+<h2>X</h2>
+<div class="grid"><div id="Xanti Schawinsky"><p onclick="copyToClipboard(this)">Xanti Schawinsky</p><img src="../assets/images/sdxl1.0/artists/Xanti Schawinsky.jpg" alt="Xanti Schawinsky" loading="lazy" onerror="this.style.display='none'"></div><div id="Xi Jiu"><p onclick="copyToClipboard(this)">Xi Jiu</p><img src="../assets/images/sdxl1.0/artists/Xi Jiu.jpg" alt="Xi Jiu" loading="lazy" onerror="this.style.display='none'"></div><div id="Xiaofei Yue"><p onclick="copyToClipboard(this)">Xiaofei Yue</p><img src="../assets/images/sdxl1.0/artists/Xiaofei Yue.jpg" alt="Xiaofei Yue" loading="lazy" onerror="this.style.display='none'"></div><div id="Xu Beihong"><p onclick="copyToClipboard(this)">Xu Beihong</p><img src="../assets/images/sdxl1.0/artists/Xu Beihong.jpg" alt="Xu Beihong" loading="lazy" onerror="this.style.display='none'"></div><div id="Xu Bing"><p onclick="copyToClipboard(this)">Xu Bing</p><img src="../assets/images/sdxl1.0/artists/Xu Bing.jpg" alt="Xu Bing" loading="lazy" onerror="this.style.display='none'"></div></div>
 </div>
 
-<link rel="stylesheet" href="{{ '/main.css' | relative_url }}">
-{% assign letter = 'X' %}
-<div class="alphabet-nav">
-    <a href="{{ site.baseurl }}/index.html">All</a>
-    <a href="{{ site.baseurl }}/pages/A.html">A</a>
-    <a href="{{ site.baseurl }}/pages/B.html">B</a>
-    <a href="{{ site.baseurl }}/pages/C.html">C</a>
-    <a href="{{ site.baseurl }}/pages/D.html">D</a>
-    <a href="{{ site.baseurl }}/pages/E.html">E</a>
-    <a href="{{ site.baseurl }}/pages/F.html">F</a>
-    <a href="{{ site.baseurl }}/pages/G.html">G</a>
-    <a href="{{ site.baseurl }}/pages/H.html">H</a>
-    <a href="{{ site.baseurl }}/pages/I.html">I</a>
-    <a href="{{ site.baseurl }}/pages/J.html">J</a>
-    <a href="{{ site.baseurl }}/pages/K.html">K</a>
-    <a href="{{ site.baseurl }}/pages/L.html">L</a>
-    <a href="{{ site.baseurl }}/pages/M.html">M</a>
-    <a href="{{ site.baseurl }}/pages/N.html">N</a>
-    <a href="{{ site.baseurl }}/pages/O.html">O</a>
-    <a href="{{ site.baseurl }}/pages/P.html">P</a>
-    <a href="{{ site.baseurl }}/pages/Q.html">Q</a>
-    <a href="{{ site.baseurl }}/pages/R.html">R</a>
-    <a href="{{ site.baseurl }}/pages/S.html">S</a>
-    <a href="{{ site.baseurl }}/pages/T.html">T</a>
-    <a href="{{ site.baseurl }}/pages/U.html">U</a>
-    <a href="{{ site.baseurl }}/pages/V.html">V</a>
-    <a href="{{ site.baseurl }}/pages/W.html">W</a>
-    <a href="{{ site.baseurl }}/pages/X.html">X</a>
-    <a href="{{ site.baseurl }}/pages/Y.html">Y</a>
-    <a href="{{ site.baseurl }}/pages/Z.html">Z</a>
+<div id="lightbox">
+  <span id="lightbox-close" onclick="closeLightbox()">✕</span>
+  <span id="lightbox-prev" onclick="lbPrev()">&#8249;</span>
+  <img id="lightbox-img" src="" alt="">
+  <span id="lightbox-name"></span>
+  <span id="lightbox-next" onclick="lbNext()">&#8250;</span>
 </div>
 
-<h2>{{ letter }}</h2>
+<button id="back-to-top" onclick="scrollToTop()">↑</button><div class="copied-toast" id="copied-toast">Copied!</div>
+<script>
 
-<div class="grid">
-    {% for image in site.static_files %}
-        {% assign filename = image.name | remove: '.jpg' %}
-        {% assign first_char = filename | slice: 0 | upcase %}
-        {% if image.path contains 'artists' and first_char == letter %}
-            <div id="{{ image.name | remove: '.jpg' }}">
-                <p onclick="copyToClipboard(this)">{{ image.name | remove: '.jpg' }}</p>
-                <img src="{{ site.baseurl }}{{ image.path }}" alt="{{ image.name }}">
-            </div>
-        {% endif %}
-    {% endfor %}
-    </div>
+function searchArtist(){
+    const q=document.getElementById('search-bar').value.toLowerCase();
+    const res=document.getElementById('search-results');
+    if(!q){res.innerHTML='';return;}
+    const matches=["Xanti Schawinsky", "Xi Jiu", "Xiaofei Yue", "Xu Beihong", "Xu Bing"].filter(a=>a.toLowerCase().includes(q)).slice(0,20);
+    res.innerHTML=matches.map(a=>'<div onclick="scrollToArtist(\''+a.replace(/'/g,"\\'")+'\'">'+a+'</div>').join('');
+}
+function clearSearch(){
+    document.getElementById('search-bar').value='';
+    document.getElementById('search-results').innerHTML='';
+}
+function scrollToArtist(name){
+    const el=document.getElementById(name);
+    if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.style.outline='2px solid #aef';setTimeout(()=>el.style.outline='',2000);}
+    document.getElementById('search-results').innerHTML='';
+}
 
-<button id="back-to-top" onclick="scrollToTop()">↑</button>
+document.addEventListener('DOMContentLoaded',()=>bindImgClick());
 
-<script src="{{ '/assets/js/script.js' | relative_url }}"></script>
+// ── 라이트박스 ──
+const lb      = document.getElementById('lightbox');
+const lbImg   = document.getElementById('lightbox-img');
+const lbName  = document.getElementById('lightbox-name');
+let lbItems=[], lbIdx=0;
+
+function buildLbItems(){
+    lbItems = Array.from(document.querySelectorAll('.grid img, .image img'))
+                   .filter(img=>img.style.display!=='none' && img.complete && img.naturalWidth>0);
+}
+
+function openLightbox(img){
+    buildLbItems();
+    lbIdx = lbItems.indexOf(img);
+    if(lbIdx===-1){lbItems.unshift(img);lbIdx=0;}
+    showLb(lbIdx);
+}
+
+function showLb(idx){
+    const img = lbItems[idx];
+    if(!img) return;
+    lbImg.src   = img.src;
+    lbImg.alt   = img.alt;
+    lbName.textContent = img.alt;
+    lb.classList.add('open');
+    document.body.style.overflow='hidden';
+}
+
+function closeLightbox(){
+    lb.classList.remove('open');
+    lbImg.src='';
+    document.body.style.overflow='';
+}
+
+function lbPrev(){lbIdx=(lbIdx-1+lbItems.length)%lbItems.length;showLb(lbIdx);}
+function lbNext(){lbIdx=(lbIdx+1)%lbItems.length;showLb(lbIdx);}
+
+lb.addEventListener('click',e=>{if(e.target===lb)closeLightbox();});
+document.addEventListener('keydown',e=>{
+    if(!lb.classList.contains('open'))return;
+    if(e.key==='Escape')closeLightbox();
+    if(e.key==='ArrowLeft')lbPrev();
+    if(e.key==='ArrowRight')lbNext();
+});
+lbName.addEventListener('click',()=>{
+    navigator.clipboard.writeText(lbName.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+});
+
+// 이미지에 클릭 이벤트 등록 (동적 생성 포함)
+function bindImgClick(root){
+    (root||document).querySelectorAll('.grid img,.image img').forEach(img=>{
+        if(!img.dataset.lbBound){
+            img.dataset.lbBound='1';
+            img.addEventListener('click',()=>openLightbox(img));
+        }
+    });
+}
+
+
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+function copyToClipboard(el){
+    navigator.clipboard.writeText(el.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+}
+window.addEventListener('scroll',()=>{
+    document.getElementById('back-to-top').style.display=window.scrollY>400?'block':'none';
+});
+document.addEventListener('click',e=>{
+    if(!e.target.closest('.search-container'))
+        document.getElementById('search-results').innerHTML='';
+});
+
+</script>
+</body>
+</html>

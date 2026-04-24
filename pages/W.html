@@ -1,60 +1,180 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>W - SDXL Artist Study</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:sans-serif;margin:0;padding:0;background:#111;color:#eee}
+.site-header{background:#1a1a2e;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid #333}
+.site-title{color:#aef;font-size:1.2em;font-weight:bold;text-decoration:none}
+.site-nav{display:flex;flex-wrap:wrap;gap:6px}
+.site-nav a{color:#ccc;text-decoration:none;padding:4px 10px;border:1px solid #444;border-radius:4px;font-size:13px}
+.site-nav a:hover,.site-nav a.active{background:#335;color:#aef;border-color:#aef}
+.page-content{padding:14px 16px}
+.intro-text{padding:6px 0 16px;line-height:1.6;color:#bbb}
+.search-container{position:relative;margin-bottom:14px}
+#search-bar{width:100%;max-width:420px;padding:8px 36px 8px 10px;font-size:15px;background:#222;color:#eee;border:1px solid #444;border-radius:4px}
+#clear-icon{position:absolute;left:396px;top:7px;cursor:pointer;font-size:22px;color:#aaa}
+#search-results{background:#222;border:1px solid #444;max-width:420px;position:absolute;z-index:100;width:100%;border-radius:0 0 4px 4px}
+#search-results div{padding:6px 10px;cursor:pointer}
+#search-results div:hover{background:#333}
+.alphabet-nav{margin-bottom:14px;display:flex;flex-wrap:wrap;gap:4px}
+.alphabet-nav a{color:#aef;text-decoration:none;padding:3px 7px;border:1px solid #444;border-radius:4px;font-size:13px}
+.alphabet-nav a:hover,.alphabet-nav a.active{background:#335;border-color:#aef}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.grid>div,.image{background:#1a1a1a;border-radius:6px;overflow:hidden;text-align:center}
+.grid>div p,.image p{padding:6px;margin:0;font-size:12px;cursor:pointer;word-break:break-word}
+.grid>div p:hover,.image p:hover{color:#aef}
+.grid>div img,.image img{width:100%;display:block;cursor:zoom-in;transition:opacity .15s}
+.grid>div img:hover,.image img:hover{opacity:.85}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.tag{background:#222;color:#ccc;border:1px solid #444;padding:5px 12px;border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s}
+.tag:hover,.tag.active{background:#335;color:#aef;border-color:#aef}
+.tag-all{background:#335;color:#aef;border-color:#aef}
+#result-count{color:#888;font-size:13px;margin-bottom:10px}
+h2{margin:0 0 12px;font-size:2em;color:#aef}
+#back-to-top{position:fixed;bottom:28px;right:28px;padding:10px 14px;background:#333;color:#eee;border:none;border-radius:50%;cursor:pointer;font-size:20px;display:none}
+#back-to-top:hover{background:#555}
+.copied-toast{position:fixed;bottom:76px;right:28px;background:#4f4;color:#000;padding:6px 14px;border-radius:4px;display:none;font-size:13px}
+
+/* ── 팝업 라이트박스 ── */
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;justify-content:center;align-items:center;flex-direction:column;gap:10px}
+#lightbox.open{display:flex}
+#lightbox img{max-width:90vw;max-height:82vh;border-radius:8px;box-shadow:0 0 40px #000;object-fit:contain}
+#lightbox-name{color:#eee;font-size:1em;text-align:center;max-width:90vw;cursor:pointer;padding:4px 12px;background:rgba(255,255,255,.08);border-radius:4px}
+#lightbox-name:hover{color:#4f4}
+#lightbox-close{position:fixed;top:18px;right:24px;font-size:2em;color:#aaa;cursor:pointer;line-height:1}
+#lightbox-close:hover{color:#fff}
+#lightbox-prev,#lightbox-next{position:fixed;top:50%;transform:translateY(-50%);font-size:2.5em;color:#aaa;cursor:pointer;user-select:none;padding:0 16px}
+#lightbox-prev{left:4px}#lightbox-next{right:4px}
+#lightbox-prev:hover,#lightbox-next:hover{color:#fff}
+</style>
+</head>
+<body>
+<header class="site-header"><a class="site-title" href="../index.html">SDXL Artist Study</a><nav class="site-nav"><a href="../index.html" class="active">🎨 Artists</a><a href="../film.html" class="">🎞 Film</a><a href="../cameras.html" class="">📷 Cameras</a><a href="../art-movements.html" class="">🖼 Movements</a><a href="../art-mediums.html" class="">✏️ Mediums</a><a href="../tags.html" class="">🏷 Tags</a></nav></header>
+<div class="page-content">
+
 <div class="search-container">
-    <input type="text" id="search-bar" placeholder="Search for an artist..." onkeyup="searchArtist()">
-    <span id="clear-icon" onclick="clearSearch()">×</span>
-    <div id="search-results"></div>
+  <input type="text" id="search-bar" placeholder="Search for an artist..." oninput="searchArtist()">
+  <span id="clear-icon" onclick="clearSearch()">×</span>
+  <div id="search-results"></div>
+</div>
+<div class="alphabet-nav"><a href="../index.html">All</a><a href="../pages/A.html" class="">A</a><a href="../pages/B.html" class="">B</a><a href="../pages/C.html" class="">C</a><a href="../pages/D.html" class="">D</a><a href="../pages/E.html" class="">E</a><a href="../pages/F.html" class="">F</a><a href="../pages/G.html" class="">G</a><a href="../pages/H.html" class="">H</a><a href="../pages/I.html" class="">I</a><a href="../pages/J.html" class="">J</a><a href="../pages/K.html" class="">K</a><a href="../pages/L.html" class="">L</a><a href="../pages/M.html" class="">M</a><a href="../pages/N.html" class="">N</a><a href="../pages/O.html" class="">O</a><a href="../pages/P.html" class="">P</a><a href="../pages/Q.html" class="">Q</a><a href="../pages/R.html" class="">R</a><a href="../pages/S.html" class="">S</a><a href="../pages/T.html" class="">T</a><a href="../pages/U.html" class="">U</a><a href="../pages/V.html" class="">V</a><a href="../pages/W.html" class="active">W</a><a href="../pages/X.html" class="">X</a><a href="../pages/Y.html" class="">Y</a><a href="../pages/Z.html" class="">Z</a></div>
+<h2>W</h2>
+<div class="grid"><div id="W. Eugene Smith"><p onclick="copyToClipboard(this)">W. Eugene Smith</p><img src="../assets/images/sdxl1.0/artists/W. Eugene Smith.jpg" alt="W. Eugene Smith" loading="lazy" onerror="this.style.display='none'"></div><div id="W. Heath Robinson"><p onclick="copyToClipboard(this)">W. Heath Robinson</p><img src="../assets/images/sdxl1.0/artists/W. Heath Robinson.jpg" alt="W. Heath Robinson" loading="lazy" onerror="this.style.display='none'"></div><div id="W. W. Denslow"><p onclick="copyToClipboard(this)">W. W. Denslow</p><img src="../assets/images/sdxl1.0/artists/W. W. Denslow.jpg" alt="W. W. Denslow" loading="lazy" onerror="this.style.display='none'"></div><div id="WLOP"><p onclick="copyToClipboard(this)">WLOP</p><img src="../assets/images/sdxl1.0/artists/WLOP.jpg" alt="WLOP" loading="lazy" onerror="this.style.display='none'"></div><div id="Wade Guyton"><p onclick="copyToClipboard(this)">Wade Guyton</p><img src="../assets/images/sdxl1.0/artists/Wade Guyton.jpg" alt="Wade Guyton" loading="lazy" onerror="this.style.display='none'"></div><div id="Wadim Kashin"><p onclick="copyToClipboard(this)">Wadim Kashin</p><img src="../assets/images/sdxl1.0/artists/Wadim Kashin.jpg" alt="Wadim Kashin" loading="lazy" onerror="this.style.display='none'"></div><div id="Walker Evans"><p onclick="copyToClipboard(this)">Walker Evans</p><img src="../assets/images/sdxl1.0/artists/Walker Evans.jpg" alt="Walker Evans" loading="lazy" onerror="this.style.display='none'"></div><div id="Wallace Edwards"><p onclick="copyToClipboard(this)">Wallace Edwards</p><img src="../assets/images/sdxl1.0/artists/Wallace Edwards.jpg" alt="Wallace Edwards" loading="lazy" onerror="this.style.display='none'"></div><div id="Wallace Polsom"><p onclick="copyToClipboard(this)">Wallace Polsom</p><img src="../assets/images/sdxl1.0/artists/Wallace Polsom.jpg" alt="Wallace Polsom" loading="lazy" onerror="this.style.display='none'"></div><div id="Walt Disney"><p onclick="copyToClipboard(this)">Walt Disney</p><img src="../assets/images/sdxl1.0/artists/Walt Disney.jpg" alt="Walt Disney" loading="lazy" onerror="this.style.display='none'"></div><div id="Walt Kelly"><p onclick="copyToClipboard(this)">Walt Kelly</p><img src="../assets/images/sdxl1.0/artists/Walt Kelly.jpg" alt="Walt Kelly" loading="lazy" onerror="this.style.display='none'"></div><div id="Walt Simonson"><p onclick="copyToClipboard(this)">Walt Simonson</p><img src="../assets/images/sdxl1.0/artists/Walt Simonson.jpg" alt="Walt Simonson" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Battiss"><p onclick="copyToClipboard(this)">Walter Battiss</p><img src="../assets/images/sdxl1.0/artists/Walter Battiss.jpg" alt="Walter Battiss" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Baumhofer"><p onclick="copyToClipboard(this)">Walter Baumhofer</p><img src="../assets/images/sdxl1.0/artists/Walter Baumhofer.jpg" alt="Walter Baumhofer" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Crane"><p onclick="copyToClipboard(this)">Walter Crane</p><img src="../assets/images/sdxl1.0/artists/Walter Crane.jpg" alt="Walter Crane" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Ernest Webster"><p onclick="copyToClipboard(this)">Walter Ernest Webster</p><img src="../assets/images/sdxl1.0/artists/Walter Ernest Webster.jpg" alt="Walter Ernest Webster" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Gropius"><p onclick="copyToClipboard(this)">Walter Gropius</p><img src="../assets/images/sdxl1.0/artists/Walter Gropius.jpg" alt="Walter Gropius" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Keane"><p onclick="copyToClipboard(this)">Walter Keane</p><img src="../assets/images/sdxl1.0/artists/Walter Keane.jpg" alt="Walter Keane" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Kim"><p onclick="copyToClipboard(this)">Walter Kim</p><img src="../assets/images/sdxl1.0/artists/Walter Kim.jpg" alt="Walter Kim" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Langley"><p onclick="copyToClipboard(this)">Walter Langley</p><img src="../assets/images/sdxl1.0/artists/Walter Langley.jpg" alt="Walter Langley" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Launt Palmer"><p onclick="copyToClipboard(this)">Walter Launt Palmer</p><img src="../assets/images/sdxl1.0/artists/Walter Launt Palmer.jpg" alt="Walter Launt Palmer" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Percy Day"><p onclick="copyToClipboard(this)">Walter Percy Day</p><img src="../assets/images/sdxl1.0/artists/Walter Percy Day.jpg" alt="Walter Percy Day" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Quirt"><p onclick="copyToClipboard(this)">Walter Quirt</p><img src="../assets/images/sdxl1.0/artists/Walter Quirt.jpg" alt="Walter Quirt" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Schnackenberg"><p onclick="copyToClipboard(this)">Walter Schnackenberg</p><img src="../assets/images/sdxl1.0/artists/Walter Schnackenberg.jpg" alt="Walter Schnackenberg" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Sickert"><p onclick="copyToClipboard(this)">Walter Sickert</p><img src="../assets/images/sdxl1.0/artists/Walter Sickert.jpg" alt="Walter Sickert" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Stackpool"><p onclick="copyToClipboard(this)">Walter Stackpool</p><img src="../assets/images/sdxl1.0/artists/Walter Stackpool.jpg" alt="Walter Stackpool" loading="lazy" onerror="this.style.display='none'"></div><div id="Walter Velez"><p onclick="copyToClipboard(this)">Walter Velez</p><img src="../assets/images/sdxl1.0/artists/Walter Velez.jpg" alt="Walter Velez" loading="lazy" onerror="this.style.display='none'"></div><div id="Wangechi Mutu"><p onclick="copyToClipboard(this)">Wangechi Mutu</p><img src="../assets/images/sdxl1.0/artists/Wangechi Mutu.jpg" alt="Wangechi Mutu" loading="lazy" onerror="this.style.display='none'"></div><div id="Ward Kimball"><p onclick="copyToClipboard(this)">Ward Kimball</p><img src="../assets/images/sdxl1.0/artists/Ward Kimball.jpg" alt="Ward Kimball" loading="lazy" onerror="this.style.display='none'"></div><div id="Warren Buffet"><p onclick="copyToClipboard(this)">Warren Buffet</p><img src="../assets/images/sdxl1.0/artists/Warren Buffet.jpg" alt="Warren Buffet" loading="lazy" onerror="this.style.display='none'"></div><div id="Warren Ellis"><p onclick="copyToClipboard(this)">Warren Ellis</p><img src="../assets/images/sdxl1.0/artists/Warren Ellis.jpg" alt="Warren Ellis" loading="lazy" onerror="this.style.display='none'"></div><div id="Warwick Globe"><p onclick="copyToClipboard(this)">Warwick Globe</p><img src="../assets/images/sdxl1.0/artists/Warwick Globe.jpg" alt="Warwick Globe" loading="lazy" onerror="this.style.display='none'"></div><div id="Warwick Goble"><p onclick="copyToClipboard(this)">Warwick Goble</p><img src="../assets/images/sdxl1.0/artists/Warwick Goble.jpg" alt="Warwick Goble" loading="lazy" onerror="this.style.display='none'"></div><div id="Wassily Kandinsky"><p onclick="copyToClipboard(this)">Wassily Kandinsky</p><img src="../assets/images/sdxl1.0/artists/Wassily Kandinsky.jpg" alt="Wassily Kandinsky" loading="lazy" onerror="this.style.display='none'"></div><div id="Wayne Barlowe"><p onclick="copyToClipboard(this)">Wayne Barlowe</p><img src="../assets/images/sdxl1.0/artists/Wayne Barlowe.jpg" alt="Wayne Barlowe" loading="lazy" onerror="this.style.display='none'"></div><div id="Wayne England"><p onclick="copyToClipboard(this)">Wayne England</p><img src="../assets/images/sdxl1.0/artists/Wayne England.jpg" alt="Wayne England" loading="lazy" onerror="this.style.display='none'"></div><div id="Wayne Reynolds"><p onclick="copyToClipboard(this)">Wayne Reynolds</p><img src="../assets/images/sdxl1.0/artists/Wayne Reynolds.jpg" alt="Wayne Reynolds" loading="lazy" onerror="this.style.display='none'"></div><div id="Wayne Thiebaud"><p onclick="copyToClipboard(this)">Wayne Thiebaud</p><img src="../assets/images/sdxl1.0/artists/Wayne Thiebaud.jpg" alt="Wayne Thiebaud" loading="lazy" onerror="this.style.display='none'"></div><div id="Wendy Froud"><p onclick="copyToClipboard(this)">Wendy Froud</p><img src="../assets/images/sdxl1.0/artists/Wendy Froud.jpg" alt="Wendy Froud" loading="lazy" onerror="this.style.display='none'"></div><div id="Werner Herzog"><p onclick="copyToClipboard(this)">Werner Herzog</p><img src="../assets/images/sdxl1.0/artists/Werner Herzog.jpg" alt="Werner Herzog" loading="lazy" onerror="this.style.display='none'"></div><div id="Wes Anderson"><p onclick="copyToClipboard(this)">Wes Anderson</p><img src="../assets/images/sdxl1.0/artists/Wes Anderson.jpg" alt="Wes Anderson" loading="lazy" onerror="this.style.display='none'"></div><div id="Wes Benscoter"><p onclick="copyToClipboard(this)">Wes Benscoter</p><img src="../assets/images/sdxl1.0/artists/Wes Benscoter.jpg" alt="Wes Benscoter" loading="lazy" onerror="this.style.display='none'"></div><div id="Wes Wilson"><p onclick="copyToClipboard(this)">Wes Wilson</p><img src="../assets/images/sdxl1.0/artists/Wes Wilson.jpg" alt="Wes Wilson" loading="lazy" onerror="this.style.display='none'"></div><div id="Wiesław Wałkuski"><p onclick="copyToClipboard(this)">Wiesław Wałkuski</p><img src="../assets/images/sdxl1.0/artists/Wiesław Wałkuski.jpg" alt="Wiesław Wałkuski" loading="lazy" onerror="this.style.display='none'"></div><div id="Wifredo Lam"><p onclick="copyToClipboard(this)">Wifredo Lam</p><img src="../assets/images/sdxl1.0/artists/Wifredo Lam.jpg" alt="Wifredo Lam" loading="lazy" onerror="this.style.display='none'"></div><div id="Wilhelm Bernatzik"><p onclick="copyToClipboard(this)">Wilhelm Bernatzik</p><img src="../assets/images/sdxl1.0/artists/Wilhelm Bernatzik.jpg" alt="Wilhelm Bernatzik" loading="lazy" onerror="this.style.display='none'"></div><div id="Wilhelm Kotarbiński"><p onclick="copyToClipboard(this)">Wilhelm Kotarbiński</p><img src="../assets/images/sdxl1.0/artists/Wilhelm Kotarbiński.jpg" alt="Wilhelm Kotarbiński" loading="lazy" onerror="this.style.display='none'"></div><div id="Wilhelm Lehmbruck"><p onclick="copyToClipboard(this)">Wilhelm Lehmbruck</p><img src="../assets/images/sdxl1.0/artists/Wilhelm Lehmbruck.jpg" alt="Wilhelm Lehmbruck" loading="lazy" onerror="this.style.display='none'"></div><div id="Wilhelm Pleydenwurff"><p onclick="copyToClipboard(this)">Wilhelm Pleydenwurff</p><img src="../assets/images/sdxl1.0/artists/Wilhelm Pleydenwurff.jpg" alt="Wilhelm Pleydenwurff" loading="lazy" onerror="this.style.display='none'"></div><div id="Wilhelmina Barns-Graham"><p onclick="copyToClipboard(this)">Wilhelmina Barns-Graham</p><img src="../assets/images/sdxl1.0/artists/Wilhelmina Barns-Graham.jpg" alt="Wilhelmina Barns-Graham" loading="lazy" onerror="this.style.display='none'"></div><div id="Wilhelmina Weber Furlong"><p onclick="copyToClipboard(this)">Wilhelmina Weber Furlong</p><img src="../assets/images/sdxl1.0/artists/Wilhelmina Weber Furlong.jpg" alt="Wilhelmina Weber Furlong" loading="lazy" onerror="this.style.display='none'"></div><div id="Will Barnet"><p onclick="copyToClipboard(this)">Will Barnet</p><img src="../assets/images/sdxl1.0/artists/Will Barnet.jpg" alt="Will Barnet" loading="lazy" onerror="this.style.display='none'"></div><div id="Will Eisner"><p onclick="copyToClipboard(this)">Will Eisner</p><img src="../assets/images/sdxl1.0/artists/Will Eisner.jpg" alt="Will Eisner" loading="lazy" onerror="this.style.display='none'"></div><div id="Willard Metcalf"><p onclick="copyToClipboard(this)">Willard Metcalf</p><img src="../assets/images/sdxl1.0/artists/Willard Metcalf.jpg" alt="Willard Metcalf" loading="lazy" onerror="this.style.display='none'"></div><div id="Willem Basse"><p onclick="copyToClipboard(this)">Willem Basse</p><img src="../assets/images/sdxl1.0/artists/Willem Basse.jpg" alt="Willem Basse" loading="lazy" onerror="this.style.display='none'"></div><div id="Willem Claesz. Heda"><p onclick="copyToClipboard(this)">Willem Claesz. Heda</p><img src="../assets/images/sdxl1.0/artists/Willem Claesz. Heda.jpg" alt="Willem Claesz. Heda" loading="lazy" onerror="this.style.display='none'"></div><div id="Willem Haenraets"><p onclick="copyToClipboard(this)">Willem Haenraets</p><img src="../assets/images/sdxl1.0/artists/Willem Haenraets.jpg" alt="Willem Haenraets" loading="lazy" onerror="this.style.display='none'"></div><div id="Willem Hofhuizen"><p onclick="copyToClipboard(this)">Willem Hofhuizen</p><img src="../assets/images/sdxl1.0/artists/Willem Hofhuizen.jpg" alt="Willem Hofhuizen" loading="lazy" onerror="this.style.display='none'"></div><div id="Willem Kalf"><p onclick="copyToClipboard(this)">Willem Kalf</p><img src="../assets/images/sdxl1.0/artists/Willem Kalf.jpg" alt="Willem Kalf" loading="lazy" onerror="this.style.display='none'"></div><div id="Willem de Kooning"><p onclick="copyToClipboard(this)">Willem de Kooning</p><img src="../assets/images/sdxl1.0/artists/Willem de Kooning.jpg" alt="Willem de Kooning" loading="lazy" onerror="this.style.display='none'"></div><div id="Willem van Aelst"><p onclick="copyToClipboard(this)">Willem van Aelst</p><img src="../assets/images/sdxl1.0/artists/Willem van Aelst.jpg" alt="Willem van Aelst" loading="lazy" onerror="this.style.display='none'"></div><div id="Willem van Haecht"><p onclick="copyToClipboard(this)">Willem van Haecht</p><img src="../assets/images/sdxl1.0/artists/Willem van Haecht.jpg" alt="Willem van Haecht" loading="lazy" onerror="this.style.display='none'"></div><div id="Willi Baumeister"><p onclick="copyToClipboard(this)">Willi Baumeister</p><img src="../assets/images/sdxl1.0/artists/Willi Baumeister.jpg" alt="Willi Baumeister" loading="lazy" onerror="this.style.display='none'"></div><div id="William Barak"><p onclick="copyToClipboard(this)">William Barak</p><img src="../assets/images/sdxl1.0/artists/William Barak.jpg" alt="William Barak" loading="lazy" onerror="this.style.display='none'"></div><div id="William Blair Bruce"><p onclick="copyToClipboard(this)">William Blair Bruce</p><img src="../assets/images/sdxl1.0/artists/William Blair Bruce.jpg" alt="William Blair Bruce" loading="lazy" onerror="this.style.display='none'"></div><div id="William Blake"><p onclick="copyToClipboard(this)">William Blake</p><img src="../assets/images/sdxl1.0/artists/William Blake.jpg" alt="William Blake" loading="lazy" onerror="this.style.display='none'"></div><div id="William Copley"><p onclick="copyToClipboard(this)">William Copley</p><img src="../assets/images/sdxl1.0/artists/William Copley.jpg" alt="William Copley" loading="lazy" onerror="this.style.display='none'"></div><div id="William Degouve de Nuncques"><p onclick="copyToClipboard(this)">William Degouve de Nuncques</p><img src="../assets/images/sdxl1.0/artists/William Degouve de Nuncques.jpg" alt="William Degouve de Nuncques" loading="lazy" onerror="this.style.display='none'"></div><div id="William Dyce"><p onclick="copyToClipboard(this)">William Dyce</p><img src="../assets/images/sdxl1.0/artists/William Dyce.jpg" alt="William Dyce" loading="lazy" onerror="this.style.display='none'"></div><div id="William Eggleston"><p onclick="copyToClipboard(this)">William Eggleston</p><img src="../assets/images/sdxl1.0/artists/William Eggleston.jpg" alt="William Eggleston" loading="lazy" onerror="this.style.display='none'"></div><div id="William Etty"><p onclick="copyToClipboard(this)">William Etty</p><img src="../assets/images/sdxl1.0/artists/William Etty.jpg" alt="William Etty" loading="lazy" onerror="this.style.display='none'"></div><div id="William Faithorne"><p onclick="copyToClipboard(this)">William Faithorne</p><img src="../assets/images/sdxl1.0/artists/William Faithorne.jpg" alt="William Faithorne" loading="lazy" onerror="this.style.display='none'"></div><div id="William Friedkin"><p onclick="copyToClipboard(this)">William Friedkin</p><img src="../assets/images/sdxl1.0/artists/William Friedkin.jpg" alt="William Friedkin" loading="lazy" onerror="this.style.display='none'"></div><div id="William George Gillies"><p onclick="copyToClipboard(this)">William George Gillies</p><img src="../assets/images/sdxl1.0/artists/William George Gillies.jpg" alt="William George Gillies" loading="lazy" onerror="this.style.display='none'"></div><div id="William Gropper"><p onclick="copyToClipboard(this)">William Gropper</p><img src="../assets/images/sdxl1.0/artists/William Gropper.jpg" alt="William Gropper" loading="lazy" onerror="this.style.display='none'"></div><div id="William Hamilton"><p onclick="copyToClipboard(this)">William Hamilton</p><img src="../assets/images/sdxl1.0/artists/William Hamilton.jpg" alt="William Hamilton" loading="lazy" onerror="this.style.display='none'"></div><div id="William Henry Barribal"><p onclick="copyToClipboard(this)">William Henry Barribal</p><img src="../assets/images/sdxl1.0/artists/William Henry Barribal.jpg" alt="William Henry Barribal" loading="lazy" onerror="this.style.display='none'"></div><div id="William Henry Hunt"><p onclick="copyToClipboard(this)">William Henry Hunt</p><img src="../assets/images/sdxl1.0/artists/William Henry Hunt.jpg" alt="William Henry Hunt" loading="lazy" onerror="this.style.display='none'"></div><div id="William Henry Margetson"><p onclick="copyToClipboard(this)">William Henry Margetson</p><img src="../assets/images/sdxl1.0/artists/William Henry Margetson.jpg" alt="William Henry Margetson" loading="lazy" onerror="this.style.display='none'"></div><div id="William Hogarth"><p onclick="copyToClipboard(this)">William Hogarth</p><img src="../assets/images/sdxl1.0/artists/William Hogarth.jpg" alt="William Hogarth" loading="lazy" onerror="this.style.display='none'"></div><div id="William Holman Hunt"><p onclick="copyToClipboard(this)">William Holman Hunt</p><img src="../assets/images/sdxl1.0/artists/William Holman Hunt.jpg" alt="William Holman Hunt" loading="lazy" onerror="this.style.display='none'"></div><div id="William James Glackens"><p onclick="copyToClipboard(this)">William James Glackens</p><img src="../assets/images/sdxl1.0/artists/William James Glackens.jpg" alt="William James Glackens" loading="lazy" onerror="this.style.display='none'"></div><div id="William Kay Blacklock"><p onclick="copyToClipboard(this)">William Kay Blacklock</p><img src="../assets/images/sdxl1.0/artists/William Kay Blacklock.jpg" alt="William Kay Blacklock" loading="lazy" onerror="this.style.display='none'"></div><div id="William Kentridge"><p onclick="copyToClipboard(this)">William Kentridge</p><img src="../assets/images/sdxl1.0/artists/William Kentridge.jpg" alt="William Kentridge" loading="lazy" onerror="this.style.display='none'"></div><div id="William Klein"><p onclick="copyToClipboard(this)">William Klein</p><img src="../assets/images/sdxl1.0/artists/William Klein.jpg" alt="William Klein" loading="lazy" onerror="this.style.display='none'"></div><div id="William Langson Lathrop"><p onclick="copyToClipboard(this)">William Langson Lathrop</p><img src="../assets/images/sdxl1.0/artists/William Langson Lathrop.jpg" alt="William Langson Lathrop" loading="lazy" onerror="this.style.display='none'"></div><div id="William Larkin"><p onclick="copyToClipboard(this)">William Larkin</p><img src="../assets/images/sdxl1.0/artists/William Larkin.jpg" alt="William Larkin" loading="lazy" onerror="this.style.display='none'"></div><div id="William Logsdail"><p onclick="copyToClipboard(this)">William Logsdail</p><img src="../assets/images/sdxl1.0/artists/William Logsdail.jpg" alt="William Logsdail" loading="lazy" onerror="this.style.display='none'"></div><div id="William McGregor Paxton"><p onclick="copyToClipboard(this)">William McGregor Paxton</p><img src="../assets/images/sdxl1.0/artists/William McGregor Paxton.jpg" alt="William McGregor Paxton" loading="lazy" onerror="this.style.display='none'"></div><div id="William McKenzie Morrison"><p onclick="copyToClipboard(this)">William McKenzie Morrison</p><img src="../assets/images/sdxl1.0/artists/William McKenzie Morrison.jpg" alt="William McKenzie Morrison" loading="lazy" onerror="this.style.display='none'"></div><div id="William Morris"><p onclick="copyToClipboard(this)">William Morris</p><img src="../assets/images/sdxl1.0/artists/William Morris.jpg" alt="William Morris" loading="lazy" onerror="this.style.display='none'"></div><div id="William Nicholson"><p onclick="copyToClipboard(this)">William Nicholson</p><img src="../assets/images/sdxl1.0/artists/William Nicholson.jpg" alt="William Nicholson" loading="lazy" onerror="this.style.display='none'"></div><div id="William Owen"><p onclick="copyToClipboard(this)">William Owen</p><img src="../assets/images/sdxl1.0/artists/William Owen.jpg" alt="William Owen" loading="lazy" onerror="this.style.display='none'"></div><div id="William Oxer"><p onclick="copyToClipboard(this)">William Oxer</p><img src="../assets/images/sdxl1.0/artists/William Oxer.jpg" alt="William Oxer" loading="lazy" onerror="this.style.display='none'"></div><div id="William Powell Frith"><p onclick="copyToClipboard(this)">William Powell Frith</p><img src="../assets/images/sdxl1.0/artists/William Powell Frith.jpg" alt="William Powell Frith" loading="lazy" onerror="this.style.display='none'"></div><div id="William Robinson Leigh"><p onclick="copyToClipboard(this)">William Robinson Leigh</p><img src="../assets/images/sdxl1.0/artists/William Robinson Leigh.jpg" alt="William Robinson Leigh" loading="lazy" onerror="this.style.display='none'"></div><div id="William Russell Flint"><p onclick="copyToClipboard(this)">William Russell Flint</p><img src="../assets/images/sdxl1.0/artists/William Russell Flint.jpg" alt="William Russell Flint" loading="lazy" onerror="this.style.display='none'"></div><div id="William S. Burroughs"><p onclick="copyToClipboard(this)">William S. Burroughs</p><img src="../assets/images/sdxl1.0/artists/William S. Burroughs.jpg" alt="William S. Burroughs" loading="lazy" onerror="this.style.display='none'"></div><div id="William Shackleton"><p onclick="copyToClipboard(this)">William Shackleton</p><img src="../assets/images/sdxl1.0/artists/William Shackleton.jpg" alt="William Shackleton" loading="lazy" onerror="this.style.display='none'"></div><div id="William Soare"><p onclick="copyToClipboard(this)">William Soare</p><img src="../assets/images/sdxl1.0/artists/William Soare.jpg" alt="William Soare" loading="lazy" onerror="this.style.display='none'"></div><div id="William Stanley Haseltine"><p onclick="copyToClipboard(this)">William Stanley Haseltine</p><img src="../assets/images/sdxl1.0/artists/William Stanley Haseltine.jpg" alt="William Stanley Haseltine" loading="lazy" onerror="this.style.display='none'"></div><div id="William Steig"><p onclick="copyToClipboard(this)">William Steig</p><img src="../assets/images/sdxl1.0/artists/William Steig.jpg" alt="William Steig" loading="lazy" onerror="this.style.display='none'"></div><div id="William Stout"><p onclick="copyToClipboard(this)">William Stout</p><img src="../assets/images/sdxl1.0/artists/William Stout.jpg" alt="William Stout" loading="lazy" onerror="this.style.display='none'"></div><div id="William Teason"><p onclick="copyToClipboard(this)">William Teason</p><img src="../assets/images/sdxl1.0/artists/William Teason.jpg" alt="William Teason" loading="lazy" onerror="this.style.display='none'"></div><div id="William Timlin"><p onclick="copyToClipboard(this)">William Timlin</p><img src="../assets/images/sdxl1.0/artists/William Timlin.jpg" alt="William Timlin" loading="lazy" onerror="this.style.display='none'"></div><div id="William Trost Richards"><p onclick="copyToClipboard(this)">William Trost Richards</p><img src="../assets/images/sdxl1.0/artists/William Trost Richards.jpg" alt="William Trost Richards" loading="lazy" onerror="this.style.display='none'"></div><div id="William Turner"><p onclick="copyToClipboard(this)">William Turner</p><img src="../assets/images/sdxl1.0/artists/William Turner.jpg" alt="William Turner" loading="lazy" onerror="this.style.display='none'"></div><div id="William Wegman"><p onclick="copyToClipboard(this)">William Wegman</p><img src="../assets/images/sdxl1.0/artists/William Wegman.jpg" alt="William Wegman" loading="lazy" onerror="this.style.display='none'"></div><div id="William Wendt"><p onclick="copyToClipboard(this)">William Wendt</p><img src="../assets/images/sdxl1.0/artists/William Wendt.jpg" alt="William Wendt" loading="lazy" onerror="this.style.display='none'"></div><div id="William Whitaker"><p onclick="copyToClipboard(this)">William Whitaker</p><img src="../assets/images/sdxl1.0/artists/William Whitaker.jpg" alt="William Whitaker" loading="lazy" onerror="this.style.display='none'"></div><div id="William Wray"><p onclick="copyToClipboard(this)">William Wray</p><img src="../assets/images/sdxl1.0/artists/William Wray.jpg" alt="William Wray" loading="lazy" onerror="this.style.display='none'"></div><div id="William Zorach"><p onclick="copyToClipboard(this)">William Zorach</p><img src="../assets/images/sdxl1.0/artists/William Zorach.jpg" alt="William Zorach" loading="lazy" onerror="this.style.display='none'"></div><div id="William-Adolphe Bouguereau"><p onclick="copyToClipboard(this)">William-Adolphe Bouguereau</p><img src="../assets/images/sdxl1.0/artists/William-Adolphe Bouguereau.jpg" alt="William-Adolphe Bouguereau" loading="lazy" onerror="this.style.display='none'"></div><div id="Wim Crouwel"><p onclick="copyToClipboard(this)">Wim Crouwel</p><img src="../assets/images/sdxl1.0/artists/Wim Crouwel.jpg" alt="Wim Crouwel" loading="lazy" onerror="this.style.display='none'"></div><div id="Wim Delvoye"><p onclick="copyToClipboard(this)">Wim Delvoye</p><img src="../assets/images/sdxl1.0/artists/Wim Delvoye.jpg" alt="Wim Delvoye" loading="lazy" onerror="this.style.display='none'"></div><div id="Wim Wenders"><p onclick="copyToClipboard(this)">Wim Wenders</p><img src="../assets/images/sdxl1.0/artists/Wim Wenders.jpg" alt="Wim Wenders" loading="lazy" onerror="this.style.display='none'"></div><div id="Winifred Knights"><p onclick="copyToClipboard(this)">Winifred Knights</p><img src="../assets/images/sdxl1.0/artists/Winifred Knights.jpg" alt="Winifred Knights" loading="lazy" onerror="this.style.display='none'"></div><div id="Winifred Nicholson"><p onclick="copyToClipboard(this)">Winifred Nicholson</p><img src="../assets/images/sdxl1.0/artists/Winifred Nicholson.jpg" alt="Winifred Nicholson" loading="lazy" onerror="this.style.display='none'"></div><div id="Winslow Homer"><p onclick="copyToClipboard(this)">Winslow Homer</p><img src="../assets/images/sdxl1.0/artists/Winslow Homer.jpg" alt="Winslow Homer" loading="lazy" onerror="this.style.display='none'"></div><div id="Winsor McCay"><p onclick="copyToClipboard(this)">Winsor McCay</p><img src="../assets/images/sdxl1.0/artists/Winsor McCay.jpg" alt="Winsor McCay" loading="lazy" onerror="this.style.display='none'"></div><div id="Wlad Safronow"><p onclick="copyToClipboard(this)">Wlad Safronow</p><img src="../assets/images/sdxl1.0/artists/Wlad Safronow.jpg" alt="Wlad Safronow" loading="lazy" onerror="this.style.display='none'"></div><div id="Wladyslaw Theodor Benda"><p onclick="copyToClipboard(this)">Wladyslaw Theodor Benda</p><img src="../assets/images/sdxl1.0/artists/Wladyslaw Theodor Benda.jpg" alt="Wladyslaw Theodor Benda" loading="lazy" onerror="this.style.display='none'"></div><div id="Wojciech Gerson"><p onclick="copyToClipboard(this)">Wojciech Gerson</p><img src="../assets/images/sdxl1.0/artists/Wojciech Gerson.jpg" alt="Wojciech Gerson" loading="lazy" onerror="this.style.display='none'"></div><div id="Wojciech Ostrycharz"><p onclick="copyToClipboard(this)">Wojciech Ostrycharz</p><img src="../assets/images/sdxl1.0/artists/Wojciech Ostrycharz.jpg" alt="Wojciech Ostrycharz" loading="lazy" onerror="this.style.display='none'"></div><div id="Wojciech Siudmak"><p onclick="copyToClipboard(this)">Wojciech Siudmak</p><img src="../assets/images/sdxl1.0/artists/Wojciech Siudmak.jpg" alt="Wojciech Siudmak" loading="lazy" onerror="this.style.display='none'"></div><div id="Wojtek Siudmak"><p onclick="copyToClipboard(this)">Wojtek Siudmak</p><img src="../assets/images/sdxl1.0/artists/Wojtek Siudmak.jpg" alt="Wojtek Siudmak" loading="lazy" onerror="this.style.display='none'"></div><div id="Wolf Kahn"><p onclick="copyToClipboard(this)">Wolf Kahn</p><img src="../assets/images/sdxl1.0/artists/Wolf Kahn.jpg" alt="Wolf Kahn" loading="lazy" onerror="this.style.display='none'"></div><div id="Wolf Vostell"><p onclick="copyToClipboard(this)">Wolf Vostell</p><img src="../assets/images/sdxl1.0/artists/Wolf Vostell.jpg" alt="Wolf Vostell" loading="lazy" onerror="this.style.display='none'"></div><div id="Wolfgang Lettl"><p onclick="copyToClipboard(this)">Wolfgang Lettl</p><img src="../assets/images/sdxl1.0/artists/Wolfgang Lettl.jpg" alt="Wolfgang Lettl" loading="lazy" onerror="this.style.display='none'"></div><div id="Wolfgang Paalen"><p onclick="copyToClipboard(this)">Wolfgang Paalen</p><img src="../assets/images/sdxl1.0/artists/Wolfgang Paalen.jpg" alt="Wolfgang Paalen" loading="lazy" onerror="this.style.display='none'"></div><div id="Wolfgang Suschitzky"><p onclick="copyToClipboard(this)">Wolfgang Suschitzky</p><img src="../assets/images/sdxl1.0/artists/Wolfgang Suschitzky.jpg" alt="Wolfgang Suschitzky" loading="lazy" onerror="this.style.display='none'"></div><div id="Wolfgang Tillmans"><p onclick="copyToClipboard(this)">Wolfgang Tillmans</p><img src="../assets/images/sdxl1.0/artists/Wolfgang Tillmans.jpg" alt="Wolfgang Tillmans" loading="lazy" onerror="this.style.display='none'"></div><div id="Wolfgang Zelmer"><p onclick="copyToClipboard(this)">Wolfgang Zelmer</p><img src="../assets/images/sdxl1.0/artists/Wolfgang Zelmer.jpg" alt="Wolfgang Zelmer" loading="lazy" onerror="this.style.display='none'"></div><div id="Won Jun Tae"><p onclick="copyToClipboard(this)">Won Jun Tae</p><img src="../assets/images/sdxl1.0/artists/Won Jun Tae.jpg" alt="Won Jun Tae" loading="lazy" onerror="this.style.display='none'"></div><div id="Wong Kar-wai"><p onclick="copyToClipboard(this)">Wong Kar-wai</p><img src="../assets/images/sdxl1.0/artists/Wong Kar-wai.jpg" alt="Wong Kar-wai" loading="lazy" onerror="this.style.display='none'"></div><div id="Woody Crumbo"><p onclick="copyToClipboard(this)">Woody Crumbo</p><img src="../assets/images/sdxl1.0/artists/Woody Crumbo.jpg" alt="Woody Crumbo" loading="lazy" onerror="this.style.display='none'"></div><div id="Worthington Whittredge"><p onclick="copyToClipboard(this)">Worthington Whittredge</p><img src="../assets/images/sdxl1.0/artists/Worthington Whittredge.jpg" alt="Worthington Whittredge" loading="lazy" onerror="this.style.display='none'"></div><div id="Wu Guanzhong"><p onclick="copyToClipboard(this)">Wu Guanzhong</p><img src="../assets/images/sdxl1.0/artists/Wu Guanzhong.jpg" alt="Wu Guanzhong" loading="lazy" onerror="this.style.display='none'"></div><div id="Wäinö Aaltonen"><p onclick="copyToClipboard(this)">Wäinö Aaltonen</p><img src="../assets/images/sdxl1.0/artists/Wäinö Aaltonen.jpg" alt="Wäinö Aaltonen" loading="lazy" onerror="this.style.display='none'"></div></div>
 </div>
 
-<link rel="stylesheet" href="{{ '/main.css' | relative_url }}">
-{% assign letter = 'W' %}
-<div class="alphabet-nav">
-    <a href="{{ site.baseurl }}/index.html">All</a>
-    <a href="{{ site.baseurl }}/pages/A.html">A</a>
-    <a href="{{ site.baseurl }}/pages/B.html">B</a>
-    <a href="{{ site.baseurl }}/pages/C.html">C</a>
-    <a href="{{ site.baseurl }}/pages/D.html">D</a>
-    <a href="{{ site.baseurl }}/pages/E.html">E</a>
-    <a href="{{ site.baseurl }}/pages/F.html">F</a>
-    <a href="{{ site.baseurl }}/pages/G.html">G</a>
-    <a href="{{ site.baseurl }}/pages/H.html">H</a>
-    <a href="{{ site.baseurl }}/pages/I.html">I</a>
-    <a href="{{ site.baseurl }}/pages/J.html">J</a>
-    <a href="{{ site.baseurl }}/pages/K.html">K</a>
-    <a href="{{ site.baseurl }}/pages/L.html">L</a>
-    <a href="{{ site.baseurl }}/pages/M.html">M</a>
-    <a href="{{ site.baseurl }}/pages/N.html">N</a>
-    <a href="{{ site.baseurl }}/pages/O.html">O</a>
-    <a href="{{ site.baseurl }}/pages/P.html">P</a>
-    <a href="{{ site.baseurl }}/pages/Q.html">Q</a>
-    <a href="{{ site.baseurl }}/pages/R.html">R</a>
-    <a href="{{ site.baseurl }}/pages/S.html">S</a>
-    <a href="{{ site.baseurl }}/pages/T.html">T</a>
-    <a href="{{ site.baseurl }}/pages/U.html">U</a>
-    <a href="{{ site.baseurl }}/pages/V.html">V</a>
-    <a href="{{ site.baseurl }}/pages/W.html">W</a>
-    <a href="{{ site.baseurl }}/pages/X.html">X</a>
-    <a href="{{ site.baseurl }}/pages/Y.html">Y</a>
-    <a href="{{ site.baseurl }}/pages/Z.html">Z</a>
+<div id="lightbox">
+  <span id="lightbox-close" onclick="closeLightbox()">✕</span>
+  <span id="lightbox-prev" onclick="lbPrev()">&#8249;</span>
+  <img id="lightbox-img" src="" alt="">
+  <span id="lightbox-name"></span>
+  <span id="lightbox-next" onclick="lbNext()">&#8250;</span>
 </div>
 
-<h2>{{ letter }}</h2>
+<button id="back-to-top" onclick="scrollToTop()">↑</button><div class="copied-toast" id="copied-toast">Copied!</div>
+<script>
 
-<div class="grid">
-    {% for image in site.static_files %}
-        {% assign filename = image.name | remove: '.jpg' %}
-        {% assign first_char = filename | slice: 0 | upcase %}
-        {% if image.path contains 'artists' and first_char == letter %}
-            <div id="{{ image.name | remove: '.jpg' }}">
-                <p onclick="copyToClipboard(this)">{{ image.name | remove: '.jpg' }}</p>
-                <img src="{{ site.baseurl }}{{ image.path }}" alt="{{ image.name }}">
-            </div>
-        {% endif %}
-    {% endfor %}
-    </div>
+function searchArtist(){
+    const q=document.getElementById('search-bar').value.toLowerCase();
+    const res=document.getElementById('search-results');
+    if(!q){res.innerHTML='';return;}
+    const matches=["W. Eugene Smith", "W. Heath Robinson", "W. W. Denslow", "WLOP", "Wade Guyton", "Wadim Kashin", "Walker Evans", "Wallace Edwards", "Wallace Polsom", "Walt Disney", "Walt Kelly", "Walt Simonson", "Walter Battiss", "Walter Baumhofer", "Walter Crane", "Walter Ernest Webster", "Walter Gropius", "Walter Keane", "Walter Kim", "Walter Langley", "Walter Launt Palmer", "Walter Percy Day", "Walter Quirt", "Walter Schnackenberg", "Walter Sickert", "Walter Stackpool", "Walter Velez", "Wangechi Mutu", "Ward Kimball", "Warren Buffet", "Warren Ellis", "Warwick Globe", "Warwick Goble", "Wassily Kandinsky", "Wayne Barlowe", "Wayne England", "Wayne Reynolds", "Wayne Thiebaud", "Wendy Froud", "Werner Herzog", "Wes Anderson", "Wes Benscoter", "Wes Wilson", "Wiesław Wałkuski", "Wifredo Lam", "Wilhelm Bernatzik", "Wilhelm Kotarbiński", "Wilhelm Lehmbruck", "Wilhelm Pleydenwurff", "Wilhelmina Barns-Graham", "Wilhelmina Weber Furlong", "Will Barnet", "Will Eisner", "Willard Metcalf", "Willem Basse", "Willem Claesz. Heda", "Willem Haenraets", "Willem Hofhuizen", "Willem Kalf", "Willem de Kooning", "Willem van Aelst", "Willem van Haecht", "Willi Baumeister", "William Barak", "William Blair Bruce", "William Blake", "William Copley", "William Degouve de Nuncques", "William Dyce", "William Eggleston", "William Etty", "William Faithorne", "William Friedkin", "William George Gillies", "William Gropper", "William Hamilton", "William Henry Barribal", "William Henry Hunt", "William Henry Margetson", "William Hogarth", "William Holman Hunt", "William James Glackens", "William Kay Blacklock", "William Kentridge", "William Klein", "William Langson Lathrop", "William Larkin", "William Logsdail", "William McGregor Paxton", "William McKenzie Morrison", "William Morris", "William Nicholson", "William Owen", "William Oxer", "William Powell Frith", "William Robinson Leigh", "William Russell Flint", "William S. Burroughs", "William Shackleton", "William Soare", "William Stanley Haseltine", "William Steig", "William Stout", "William Teason", "William Timlin", "William Trost Richards", "William Turner", "William Wegman", "William Wendt", "William Whitaker", "William Wray", "William Zorach", "William-Adolphe Bouguereau", "Wim Crouwel", "Wim Delvoye", "Wim Wenders", "Winifred Knights", "Winifred Nicholson", "Winslow Homer", "Winsor McCay", "Wlad Safronow", "Wladyslaw Theodor Benda", "Wojciech Gerson", "Wojciech Ostrycharz", "Wojciech Siudmak", "Wojtek Siudmak", "Wolf Kahn", "Wolf Vostell", "Wolfgang Lettl", "Wolfgang Paalen", "Wolfgang Suschitzky", "Wolfgang Tillmans", "Wolfgang Zelmer", "Won Jun Tae", "Wong Kar-wai", "Woody Crumbo", "Worthington Whittredge", "Wu Guanzhong", "Wäinö Aaltonen"].filter(a=>a.toLowerCase().includes(q)).slice(0,20);
+    res.innerHTML=matches.map(a=>'<div onclick="scrollToArtist(\''+a.replace(/'/g,"\\'")+'\'">'+a+'</div>').join('');
+}
+function clearSearch(){
+    document.getElementById('search-bar').value='';
+    document.getElementById('search-results').innerHTML='';
+}
+function scrollToArtist(name){
+    const el=document.getElementById(name);
+    if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.style.outline='2px solid #aef';setTimeout(()=>el.style.outline='',2000);}
+    document.getElementById('search-results').innerHTML='';
+}
 
-<button id="back-to-top" onclick="scrollToTop()">↑</button>
+document.addEventListener('DOMContentLoaded',()=>bindImgClick());
 
-<script src="{{ '/assets/js/script.js' | relative_url }}"></script>
+// ── 라이트박스 ──
+const lb      = document.getElementById('lightbox');
+const lbImg   = document.getElementById('lightbox-img');
+const lbName  = document.getElementById('lightbox-name');
+let lbItems=[], lbIdx=0;
+
+function buildLbItems(){
+    lbItems = Array.from(document.querySelectorAll('.grid img, .image img'))
+                   .filter(img=>img.style.display!=='none' && img.complete && img.naturalWidth>0);
+}
+
+function openLightbox(img){
+    buildLbItems();
+    lbIdx = lbItems.indexOf(img);
+    if(lbIdx===-1){lbItems.unshift(img);lbIdx=0;}
+    showLb(lbIdx);
+}
+
+function showLb(idx){
+    const img = lbItems[idx];
+    if(!img) return;
+    lbImg.src   = img.src;
+    lbImg.alt   = img.alt;
+    lbName.textContent = img.alt;
+    lb.classList.add('open');
+    document.body.style.overflow='hidden';
+}
+
+function closeLightbox(){
+    lb.classList.remove('open');
+    lbImg.src='';
+    document.body.style.overflow='';
+}
+
+function lbPrev(){lbIdx=(lbIdx-1+lbItems.length)%lbItems.length;showLb(lbIdx);}
+function lbNext(){lbIdx=(lbIdx+1)%lbItems.length;showLb(lbIdx);}
+
+lb.addEventListener('click',e=>{if(e.target===lb)closeLightbox();});
+document.addEventListener('keydown',e=>{
+    if(!lb.classList.contains('open'))return;
+    if(e.key==='Escape')closeLightbox();
+    if(e.key==='ArrowLeft')lbPrev();
+    if(e.key==='ArrowRight')lbNext();
+});
+lbName.addEventListener('click',()=>{
+    navigator.clipboard.writeText(lbName.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+});
+
+// 이미지에 클릭 이벤트 등록 (동적 생성 포함)
+function bindImgClick(root){
+    (root||document).querySelectorAll('.grid img,.image img').forEach(img=>{
+        if(!img.dataset.lbBound){
+            img.dataset.lbBound='1';
+            img.addEventListener('click',()=>openLightbox(img));
+        }
+    });
+}
+
+
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+function copyToClipboard(el){
+    navigator.clipboard.writeText(el.textContent).then(()=>{
+        const t=document.getElementById('copied-toast');
+        t.style.display='block';
+        setTimeout(()=>t.style.display='none',1000);
+    });
+}
+window.addEventListener('scroll',()=>{
+    document.getElementById('back-to-top').style.display=window.scrollY>400?'block':'none';
+});
+document.addEventListener('click',e=>{
+    if(!e.target.closest('.search-container'))
+        document.getElementById('search-results').innerHTML='';
+});
+
+</script>
+</body>
+</html>
